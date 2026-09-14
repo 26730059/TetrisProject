@@ -164,3 +164,46 @@ float GameLogic::GetClearAnimProgress() const {
 const std::vector<int>& GameLogic::GetClearRows() const {
     return clearingRows;
 }
+
+void GameLogic::GetCells(const ActivePiece& p, Vec2i out[4]) {
+    const auto& shape = SHAPES[p.type][p.rot];
+    for (int i = 0; i < 4; i++) {
+        out[i].x = p.x + shape[i].x;
+        out[i].y = p.y + shape[i].y;
+    }
+}
+
+ActivePiece GameLogic::Spawn(PieceType type) {
+    ActivePiece p;
+    p.type = type;
+    p.rot = 0;
+    p.x = 3;
+    p.y = -2;
+    return p;
+}
+
+ActivePiece GameLogic::GetGhost(const ActivePiece& p) const {
+    ActivePiece ghost = p;
+    while (true) {
+        ActivePiece t = ghost;
+        t.y += 1;
+        if (!Fits(t)) break;
+        ghost = t;
+    }
+    return ghost;
+}
+
+bool GameLogic::TryRotate(ActivePiece& p, int dir) {
+    ActivePiece rotated = p;
+    rotated.rot = (rotated.rot + dir + 4) % 4;
+    static const int kicks[5] = { 0, -1, 1, -2, 2 };
+    for (int k : kicks) {
+        ActivePiece test = rotated;
+        test.x += k;
+        if (Fits(test)) {
+            p = test;
+            return true;
+        }
+    }
+    return false;
+}
