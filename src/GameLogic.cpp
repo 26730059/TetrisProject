@@ -300,3 +300,69 @@ int GameLogic::HardDrop(int dropScorePerTile) {
     LockAndSpawn();
     return dist;
 }
+
+bool GameLogic::Hold() {
+    if (gameOver || paused || IsClearAnimRunning() || !canHold) return false;
+    PushEvent(LogicEvent::Hold);
+
+    if (holdType == -1) {
+        holdType = (int)current.type;
+        current = SpawnNextPiece();
+    } else {
+        int tmp = holdType;
+        holdType = (int)current.type;
+        current = Spawn((PieceType)tmp);
+    }
+    canHold = false;
+    isLocking = false;
+    lockTimer = 0.0f;
+
+    if (!Fits(current)) {
+        gameOver = true;
+        PushEvent(LogicEvent::GameOver);
+    }
+    return true;
+}
+
+void GameLogic::LockAndSpawn() {
+    if (!LockPiece(current)) {
+        gameOver = true;
+        PushEvent(LogicEvent::GameOver);
+        return;
+    }
+    canHold = true;
+    PushEvent(LogicEvent::Lock);
+
+    auto fullRows = FindFullRows();
+    if (!fullRows.empty()) {
+        StartClearAnim(fullRows);
+        PushEvent(LogicEvent::LineClear, (int)fullRows.size());
+    } else {
+        current = SpawnNextPiece();
+        if (!Fits(current)) {
+            gameOver = true;
+            PushEvent(LogicEvent::GameOver);
+        }
+    }
+    isLocking = false;
+    lockTimer = 0.0f;
+}
+
+void GameLogic::ResolveLineClear(int linesPerLevel, const int scoreTable[5]) {
+    static const int defaultScoreTable[5] = { 0, 100, 300, 500, 800 };
+    auto cRows = GetClearRows();
+    int n = ClearRows(cRows);
+
+    const int* scores = scoreTable ? scoreTable : defaultScoreTable;
+    score += scores[std::min(n, 4)] * level;
+    lines += n;
+    if (linesPerLevel > 0) {
+        level = 1 + lines / linesPerLevel;
+    }
+
+    current = SpawnNextPiece();
+    if (!Fits(current)) {
+        gameOver = true;
+        PushEvent(LogicEvent::GameOver);
+    }
+}
