@@ -230,3 +230,33 @@ ActivePiece GameLogic::SpawnNextPiece() {
     PieceType t = PopNextQueue();
     return Spawn(t);
 }
+
+PieceType GameLogic::PopNextQueue() {
+    if (nextQueue.empty()) {
+        nextQueue.push_back(NextFromBag());
+    }
+    PieceType t = nextQueue.front();
+    nextQueue.erase(nextQueue.begin());
+    nextQueue.push_back(NextFromBag());
+    return t;
+}
+
+// CORE GAMEPLAY ACTIONS
+bool GameLogic::Move(int dx, int dy, int softDropScore) {
+    if (gameOver || paused || IsClearAnimRunning()) return false;
+    ActivePiece p = current;
+    p.x += dx;
+    p.y += dy;
+    if (Fits(p)) {
+        current = p;
+        if (dy > 0 && softDropScore > 0) score += softDropScore;
+        isLocking = false;
+        lockTimer = 0.0f;
+        return true;
+    } else if (dy > 0) {
+        // Cham day / vat can -> bat dau dem thoi gian khoa
+        isLocking = true;
+        return false;
+    }
+    return false;
+}
