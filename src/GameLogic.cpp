@@ -366,3 +366,35 @@ void GameLogic::ResolveLineClear(int linesPerLevel, const int scoreTable[5]) {
         PushEvent(LogicEvent::GameOver);
     }
 }
+
+void GameLogic::Update(float dt,
+                       float gravityInterval,
+                       float lockDelay,
+                       int linesPerLevel,
+                       const int scoreTable[5],
+                       int softDropPoints) {
+    if (gameOver || paused) return;
+
+    // Neu dang chay animation xoa hang
+    if (IsClearAnimRunning()) {
+        UpdateClearAnim(dt);
+        if (!IsClearAnimRunning()) {
+            ResolveLineClear(linesPerLevel, scoreTable);
+        }
+        return;
+    }
+
+    gravityTimer += dt;
+    if (gravityTimer >= gravityInterval) {
+        gravityTimer = 0.0f;
+        Move(0, 1, softDrop ? softDropPoints : 0);
+    }
+
+    if (isLocking) {
+        lockTimer += dt;
+        if (lockTimer >= lockDelay) {
+            LockAndSpawn();
+        }
+    }
+}
+
