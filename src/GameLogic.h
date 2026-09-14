@@ -102,4 +102,8 @@ private:
     std::vector<int> clearingRows;
     float clearAnimTimer = 0.0f;
 
+    ActivePiece current{};
+    std::vector<PieceType> nextQueue;
+    int holdType = -1;
+    bool canHold = true;
 };

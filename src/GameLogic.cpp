@@ -92,3 +92,23 @@ void GameLogic::InitBoard() {
     clearingRows.clear();
     clearAnimTimer = 0;
 }
+
+bool GameLogic::Fits(const ActivePiece& p) const {
+    Vec2i cells[4];
+    GetCells(p, cells);
+    for (auto& c : cells) {
+        if (c.x < 0 || c.x >= BOARD_W || c.y >= BOARD_H) return false;
+        if (c.y >= 0 && grid[c.y][c.x] != -1) return false;
+    }
+    return true;
+}
+
+bool GameLogic::LockPiece(const ActivePiece& p) {
+    Vec2i cells[4];
+    GetCells(p, cells);
+    for (auto& c : cells) {
+        if (c.y < 0) return false;  // Game over: khoi nam ngoai board
+        grid[c.y][c.x] = (int)p.type;
+    }
+    return true;
+}
