@@ -139,3 +139,28 @@ int GameLogic::ClearRows(const std::vector<int>& rows) {
     clearingRows.clear();
     return n;
 }
+
+void GameLogic::StartClearAnim(const std::vector<int>& rows) {
+    clearingRows = rows;
+    clearAnimTimer = 0.25f;
+}
+
+bool GameLogic::IsClearAnimRunning() const {
+    return clearAnimTimer > 0;
+}
+
+void GameLogic::UpdateClearAnim(float dt) {
+    if (clearAnimTimer > 0) {
+        clearAnimTimer -= dt;
+        if (clearAnimTimer < 0) clearAnimTimer = 0;
+    }
+}
+
+float GameLogic::GetClearAnimProgress() const {
+    if (clearAnimTimer <= 0) return 0.0f;
+    return clearAnimTimer / 0.25f;
+}
+
+const std::vector<int>& GameLogic::GetClearRows() const {
+    return clearingRows;
+}
