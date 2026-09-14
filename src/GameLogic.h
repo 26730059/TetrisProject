@@ -97,7 +97,6 @@ private:
     void ResolveLineClear(int linesPerLevel, const int scoreTable[5]);
     void RefillBag();
 
-
     std::vector<std::vector<int>> grid;
     std::vector<int> clearingRows;
     float clearAnimTimer = 0.0f;
@@ -106,4 +105,26 @@ private:
     std::vector<PieceType> nextQueue;
     int holdType = -1;
     bool canHold = true;
+    // 7-Bag RNG
+    std::vector<PieceType> bagItems;
+    std::mt19937 rng;
+
+    // Score & Level
+    int score = 0;
+    int lines = 0;
+    int level = 1;
+
+    // Timing & Physics
+    float gravityTimer = 0.0f;
+    float lockTimer    = 0.0f;
+    bool isLocking     = false;
+    bool softDrop      = false;
+
+    // State
+    bool gameOver = false;
+    bool paused   = false;
+
+    // Event queue
+    std::vector<GameEvent> events;
+
 };
