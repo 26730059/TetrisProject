@@ -260,3 +260,43 @@ bool GameLogic::Move(int dx, int dy, int softDropScore) {
     }
     return false;
 }
+
+bool GameLogic::RotateCW() {
+    if (gameOver || paused || IsClearAnimRunning()) return false;
+    if (TryRotate(current, 1)) {
+        isLocking = false;
+        lockTimer = 0.0f;
+        PushEvent(LogicEvent::Rotate, 1);
+        return true;
+    }
+    return false;
+}
+
+bool GameLogic::RotateCCW() {
+    if (gameOver || paused || IsClearAnimRunning()) return false;
+    if (TryRotate(current, -1)) {
+        isLocking = false;
+        lockTimer = 0.0f;
+        PushEvent(LogicEvent::Rotate, -1);
+        return true;
+    }
+    return false;
+}
+
+int GameLogic::HardDrop(int dropScorePerTile) {
+    if (gameOver || paused || IsClearAnimRunning()) return 0;
+    int dist = 0;
+    ActivePiece p = current;
+    while (true) {
+        ActivePiece t = p;
+        t.y += 1;
+        if (!Fits(t)) break;
+        p = t;
+        dist++;
+    }
+    current = p;
+    score += dist * dropScorePerTile;
+    PushEvent(LogicEvent::HardDrop, dist);
+    LockAndSpawn();
+    return dist;
+}
