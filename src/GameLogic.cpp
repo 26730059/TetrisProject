@@ -112,3 +112,30 @@ bool GameLogic::LockPiece(const ActivePiece& p) {
     }
     return true;
 }
+
+int GameLogic::GetCell(int x, int y) const {
+    if (x < 0 || x >= BOARD_W || y < 0 || y >= BOARD_H) return -1;
+    return grid[y][x];
+}
+
+std::vector<int> GameLogic::FindFullRows() const {
+    std::vector<int> fullRows;
+    for (int y = 0; y < BOARD_H; y++) {
+        bool full = true;
+        for (int x = 0; x < BOARD_W; x++) {
+            if (grid[y][x] == -1) { full = false; break; }
+        }
+        if (full) fullRows.push_back(y);
+    }
+    return fullRows;
+}
+
+int GameLogic::ClearRows(const std::vector<int>& rows) {
+    int n = (int)rows.size();
+    for (int row : rows) {
+        grid.erase(grid.begin() + row);
+        grid.insert(grid.begin(), std::vector<int>(BOARD_W, -1));
+    }
+    clearingRows.clear();
+    return n;
+}
