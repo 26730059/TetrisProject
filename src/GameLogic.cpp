@@ -207,3 +207,26 @@ bool GameLogic::TryRotate(ActivePiece& p, int dir) {
     }
     return false;
 }
+
+void GameLogic::ResetBag() {
+    bagItems.clear();
+    RefillBag();
+}
+
+void GameLogic::RefillBag() {
+    bagItems = { I_PIECE, O_PIECE, T_PIECE, S_PIECE, Z_PIECE, J_PIECE, L_PIECE };
+    std::shuffle(bagItems.begin(), bagItems.end(), rng);
+}
+
+PieceType GameLogic::NextFromBag() {
+    if (bagItems.empty()) RefillBag();
+    PieceType p = bagItems.back();
+    bagItems.pop_back();
+    return p;
+}
+
+// SPAWN & QUEUE HELPERS
+ActivePiece GameLogic::SpawnNextPiece() {
+    PieceType t = PopNextQueue();
+    return Spawn(t);
+}
