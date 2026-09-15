@@ -40,3 +40,7 @@ void SoundManager::PlaySoundSafe(Sound s) {
 void SoundManager::PlayRotate() {
     PlaySoundSafe(sfxRotate);
 }
+
+void SoundManager::PlayDrop() {
+    PlaySoundSafe(sfxDrop);
+}

@@ -12,6 +12,7 @@ public:
 
     // Phat am thanh theo su kien game
     void PlayRotate();                        // Khi xoay khoi
+    void PlayDrop();                          // Khi hard drop
 
 private:
     // Am thanh hieu ung
