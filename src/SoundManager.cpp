@@ -36,3 +36,7 @@ void SoundManager::Cleanup() {
 void SoundManager::PlaySoundSafe(Sound s) {
     if (s.frameCount > 0) PlaySound(s);
 }
+
+void SoundManager::PlayRotate() {
+    PlaySoundSafe(sfxRotate);
+}

@@ -10,6 +10,9 @@ public:
     // Giai phong tat ca sound & music, dong audio device
     void Cleanup();
 
+    // Phat am thanh theo su kien game
+    void PlayRotate();                        // Khi xoay khoi
+
 private:
     // Am thanh hieu ung
     Sound sfxRotate{};
