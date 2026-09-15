@@ -1,0 +1,45 @@
+#pragma once
+
+#include "Constants.h"
+
+class SoundManager {
+public:
+    // Khoi tao audio device va load tat ca sound & music
+    void Init();
+
+    // Giai phong tat ca sound & music, dong audio device
+    void Cleanup();
+
+    // Phat am thanh theo su kien game
+    void PlayRotate();                        // Khi xoay khoi
+    void PlayDrop();                          // Khi hard drop
+    void PlayHold();                          // Khi hold khoi
+    void PlayLineClear(int lineCount);        // Khi xoa hang (1-3 vs Tetris 4 dong)
+    void PlayGameOver();                      // Khi thua
+
+    void UpdateMusic();                       // Goi moi frame (cap nhat stream)
+    void SetMusicVolume(float vol);           // Dat am luong nhac nen
+    void SetSfxVolume(float vol);             // Dat am luong hieu ung
+    void PauseMusic();                        // Tam dung nhac nen
+    void ResumeMusic();                       // Tiep tuc nhac nen
+
+private:
+    // Am thanh hieu ung
+    Sound sfxRotate{};
+    Sound sfxDrop{};
+    Sound sfxHold{};
+    Sound sfxClear{};        // xoa 1-3 hang
+    Sound sfxClear4{};       // xoa 4 hang (Tetris!)
+    Sound sfxGameOver{};
+
+    // Nhac nen
+    Music bgm{};
+    bool bgmLoaded = false;
+
+    // Am luong
+    float currentMusicVol = 0.5f;
+    float currentSfxVol   = 1.0f;
+
+    // Phat sound an toan (chi phat neu sound da load thanh cong)
+    void PlaySoundSafe(Sound s);
+};
