@@ -81,3 +81,11 @@ void SoundManager::SetSfxVolume(float vol) {
     SetSoundVolume(sfxClear4, vol);
     SetSoundVolume(sfxGameOver, vol);
 }
+
+void SoundManager::PauseMusic() {
+    if (bgmLoaded) PauseMusicStream(bgm);
+}
+
+void SoundManager::ResumeMusic() {
+    if (bgmLoaded) ResumeMusicStream(bgm);
+}

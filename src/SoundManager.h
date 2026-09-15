@@ -20,6 +20,8 @@ public:
     void UpdateMusic();                       // Goi moi frame (cap nhat stream)
     void SetMusicVolume(float vol);           // Dat am luong nhac nen
     void SetSfxVolume(float vol);             // Dat am luong hieu ung
+    void PauseMusic();                        // Tam dung nhac nen
+    void ResumeMusic();                       // Tiep tuc nhac nen
 
 private:
     // Am thanh hieu ung
