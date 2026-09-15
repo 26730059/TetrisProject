@@ -517,3 +517,44 @@ void GameSetting::DrawModal() {
         DrawText("OK", (int)(btnOk.x + (btnOk.width - okTw) * 0.5f), (int)(btnOk.y + 12), 22, WHITE);
     }
 }
+
+// KEY BINDING CHECKS
+const char* GameSetting::GetKeyName(int key) const {
+    switch (key) {
+        case KEY_LEFT:        return "LEFT";
+        case KEY_RIGHT:       return "RIGHT";
+        case KEY_UP:          return "UP";
+        case KEY_DOWN:        return "DOWN";
+        case KEY_SPACE:       return "SPACE";
+        case KEY_ENTER:       return "ENTER";
+        case KEY_LEFT_SHIFT:  return "SHIFT";
+        case KEY_A:           return "A";
+        case KEY_B:           return "B";
+        case KEY_C:           return "C";
+        case KEY_D:           return "D";
+        case KEY_E:           return "E";
+        case KEY_P:           return "P";
+        case KEY_Q:           return "Q";
+        case KEY_S:           return "S";
+        case KEY_W:           return "W";
+        case KEY_X:           return "X";
+        case KEY_Z:           return "Z";
+        default:              return "?";
+    }
+}
+
+bool GameSetting::IsKeyMoveLeft() const {
+    return IsKeyPressed(keyMoveLeft) || IsKeyPressed(keyMoveLeft2);
+}
+
+bool GameSetting::IsKeyMoveRight() const {
+    return IsKeyPressed(keyMoveRight) || IsKeyPressed(keyMoveRight2);
+}
+
+bool GameSetting::IsKeySoftDrop() const {
+    return IsKeyPressed(keySoftDrop) || IsKeyPressed(keySoftDrop2);
+}
+
+bool GameSetting::IsKeyHardDrop() const {
+    return IsKeyPressed(keyHardDrop);
+}
