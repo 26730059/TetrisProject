@@ -165,3 +165,43 @@ void GameSetting::DrawSpeakerIcon(float cx, float cy, float size, Color col, boo
         DrawLineEx({x2, y1}, {x1, y2}, 3.5f, col);
     }
 }
+
+void GameSetting::DrawHomeIcon(float cx, float cy, float size, Color col) {
+    float s = size;
+    float x = cx - s * 0.5f;
+    float y = cy - s * 0.5f;
+
+    // Mai nha (Tam giac)
+    Vector2 top = { x + s * 0.50f, y + s * 0.14f };
+    Vector2 left = { x + s * 0.14f, y + s * 0.50f };
+    Vector2 right = { x + s * 0.86f, y + s * 0.50f };
+    DrawTriangle(top, left, right, col);
+
+    // Ong khoi
+    DrawRectangle((int)(x + s * 0.68f), (int)(y + s * 0.20f),
+                  (int)(s * 0.10f), (int)(s * 0.18f), col);
+
+    // Than nha
+    DrawRectangle((int)(x + s * 0.22f), (int)(y + s * 0.48f),
+                  (int)(s * 0.56f), (int)(s * 0.38f), col);
+
+    // Cua ra vao
+    DrawRectangleRounded(
+        Rectangle{ x + s * 0.40f, y + s * 0.60f, s * 0.20f, s * 0.26f },
+        0.35f, 4, Color{230, 92, 54, 255});
+}
+
+void GameSetting::DrawGearIcon(float cx, float cy, float size, Color col) {
+    float r = size * 0.36f;
+    int teeth = 8;
+    for (int i = 0; i < teeth; i++) {
+        float angle = i * (360.0f / teeth);
+        float rad = angle * DEG2RAD;
+        float tx = cx + cosf(rad) * (r + 3.0f);
+        float ty = cy + sinf(rad) * (r + 3.0f);
+        DrawRectanglePro(Rectangle{tx, ty, size * 0.22f, size * 0.16f},
+                         Vector2{size * 0.11f, size * 0.08f}, angle, col);
+    }
+    DrawCircle((int)cx, (int)cy, r, col);
+    DrawCircle((int)cx, (int)cy, r * 0.42f, Color{28, 28, 32, 255});
+}
