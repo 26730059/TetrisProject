@@ -236,3 +236,82 @@ void GameSetting::DrawSettingsButton() {
     float cy = gearBtnBounds.y + gearBtnBounds.height * 0.5f;
     DrawGearIcon(cx, cy, 26.0f, hover ? Color{245, 220, 130, 255} : Color{200, 200, 210, 255});
 }
+
+// UPDATE MODAL INPUT
+void GameSetting::UpdateModal(SoundManager& sound, bool& outRestartGame) {
+    if (!isModalOpen) return;
+
+    Vector2 mouse = GetMousePosition();
+    bool clicked = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+    float mx = modalBounds.x;
+    float my = modalBounds.y;
+    float mw = modalBounds.width;
+
+    // 1. Nut Close [X] o header
+    Rectangle btnClose = { mx + mw - 56, my + 14, 40, 40 };
+    if (clicked && CheckCollisionPointRec(mouse, btnClose)) {
+        CloseModal();
+        return;
+    }
+
+    // 2. Nut Info [i] o header
+    Rectangle btnInfo = { mx + 16, my + 14, 40, 40 };
+    if (clicked && CheckCollisionPointRec(mouse, btnInfo)) {
+        showInfoModal = !showInfoModal;
+        return;
+    }
+
+    // Neu dang mo popup thong tin [i], chi xu ly click dong popup do
+    if (showInfoModal) {
+        Rectangle btnOk = { mx + mw * 0.5f - 60, my + 380, 120, 48 };
+        if (clicked && CheckCollisionPointRec(mouse, btnOk)) {
+            showInfoModal = false;
+        }
+        return;
+    }
+
+    // 3. SFX Toggle Track
+    Rectangle sfxTrack = { mx + 165, my + 98, 245, 56 };
+    if (clicked && CheckCollisionPointRec(mouse, sfxTrack)) {
+        ToggleSfx(sound);
+    }
+
+    // 4. Music Toggle Track
+    Rectangle musTrack = { mx + 165, my + 172, 245, 56 };
+    if (clicked && CheckCollisionPointRec(mouse, musTrack)) {
+        ToggleMusic(sound);
+    }
+
+    // 5. Do kho (Difficulty) Selector: [Easy] [Normal] [Hard]
+    float diffY = my + 292;
+    Rectangle optEasy   = { mx + 50, diffY, 114, 46 };
+    Rectangle optNormal = { mx + 172, diffY, 114, 46 };
+    Rectangle optHard   = { mx + 294, diffY, 116, 46 };
+
+    if (clicked) {
+        if (CheckCollisionPointRec(mouse, optEasy))   SetDifficulty(DIFF_EASY);
+        if (CheckCollisionPointRec(mouse, optNormal)) SetDifficulty(DIFF_NORMAL);
+        if (CheckCollisionPointRec(mouse, optHard))   SetDifficulty(DIFF_HARD);
+    }
+
+    // 6. Nut Home (Dong Modal / Quay lai choi)
+    Rectangle btnHome = { mx + 50, my + 418, 155, 64 };
+    if (clicked && CheckCollisionPointRec(mouse, btnHome)) {
+        CloseModal();
+        return;
+    }
+
+    // 7. Nut Restart (New Game)
+    Rectangle btnRestart = { mx + 225, my + 418, 185, 64 };
+    if (clicked && CheckCollisionPointRec(mouse, btnRestart)) {
+        outRestartGame = true;
+        CloseModal();
+        return;
+    }
+
+    // Phim ESC de dong
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        CloseModal();
+    }
+}
