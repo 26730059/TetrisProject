@@ -32,3 +32,7 @@ void SoundManager::Cleanup() {
 
     CloseAudioDevice();
 }
+
+void SoundManager::PlaySoundSafe(Sound s) {
+    if (s.frameCount > 0) PlaySound(s);
+}

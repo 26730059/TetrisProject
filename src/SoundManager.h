@@ -22,4 +22,7 @@ private:
     // Nhac nen
     Music bgm{};
     bool bgmLoaded = false;
+
+    // Phat sound an toan (chi phat neu sound da load thanh cong)
+    void PlaySoundSafe(Sound s);
 };
