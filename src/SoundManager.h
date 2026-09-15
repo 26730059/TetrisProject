@@ -18,4 +18,8 @@ private:
     Sound sfxClear{};        // xoa 1-3 hang
     Sound sfxClear4{};       // xoa 4 hang (Tetris!)
     Sound sfxGameOver{};
+
+    // Nhac nen
+    Music bgm{};
+    bool bgmLoaded = false;
 };
