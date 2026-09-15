@@ -60,3 +60,7 @@ void SoundManager::PlayLineClear(int lineCount) {
 void SoundManager::PlayGameOver() {
     PlaySoundSafe(sfxGameOver);
 }
+
+void SoundManager::UpdateMusic() {
+    if (bgmLoaded) UpdateMusicStream(bgm);
+}

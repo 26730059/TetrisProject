@@ -17,6 +17,8 @@ public:
     void PlayLineClear(int lineCount);        // Khi xoa hang (1-3 vs Tetris 4 dong)
     void PlayGameOver();                      // Khi thua
 
+    void UpdateMusic();                       // Goi moi frame (cap nhat stream)
+
 private:
     // Am thanh hieu ung
     Sound sfxRotate{};
