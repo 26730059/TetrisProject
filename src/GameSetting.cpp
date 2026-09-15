@@ -32,3 +32,14 @@ bool GameSetting::CheckSettingsButtonClicked() {
     Vector2 mouse = GetMousePosition();
     return CheckCollisionPointRec(mouse, gearBtnBounds) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 }
+
+// TOGGLE AUDIO
+void GameSetting::ToggleMusic(SoundManager& sound) {
+    musicEnabled = !musicEnabled;
+    sound.SetMusicVolume(musicEnabled ? musicVolume : 0.0f);
+}
+
+void GameSetting::ToggleSfx(SoundManager& sound) {
+    sfxEnabled = !sfxEnabled;
+    sound.SetSfxVolume(sfxEnabled ? sfxVolume : 0.0f);
+}
