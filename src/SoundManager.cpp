@@ -56,3 +56,7 @@ void SoundManager::PlayLineClear(int lineCount) {
         PlaySoundSafe(sfxClear);
     }
 }
+
+void SoundManager::PlayGameOver() {
+    PlaySoundSafe(sfxGameOver);
+}

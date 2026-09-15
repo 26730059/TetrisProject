@@ -15,6 +15,7 @@ public:
     void PlayDrop();                          // Khi hard drop
     void PlayHold();                          // Khi hold khoi
     void PlayLineClear(int lineCount);        // Khi xoa hang (1-3 vs Tetris 4 dong)
+    void PlayGameOver();                      // Khi thua
 
 private:
     // Am thanh hieu ung
