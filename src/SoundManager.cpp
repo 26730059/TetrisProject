@@ -15,6 +15,7 @@ void SoundManager::Init() {
     bgm = LoadMusicStream("assets/music/sound.mp3");
     bgmLoaded = true;
     PlayMusicStream(bgm);
+    ::SetMusicVolume(bgm, currentMusicVol);
 }
 
 void SoundManager::Cleanup() {
@@ -63,4 +64,20 @@ void SoundManager::PlayGameOver() {
 
 void SoundManager::UpdateMusic() {
     if (bgmLoaded) UpdateMusicStream(bgm);
+}
+
+void SoundManager::SetMusicVolume(float vol) {
+    currentMusicVol = vol;
+    if (bgmLoaded) ::SetMusicVolume(bgm, vol);
+}
+
+void SoundManager::SetSfxVolume(float vol) {
+    currentSfxVol = vol;
+    // Raylib khong co SetSoundVolume global, nhung co the set cho tung sound
+    SetSoundVolume(sfxRotate, vol);
+    SetSoundVolume(sfxDrop, vol);
+    SetSoundVolume(sfxHold, vol);
+    SetSoundVolume(sfxClear, vol);
+    SetSoundVolume(sfxClear4, vol);
+    SetSoundVolume(sfxGameOver, vol);
 }

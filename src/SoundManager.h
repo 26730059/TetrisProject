@@ -18,6 +18,8 @@ public:
     void PlayGameOver();                      // Khi thua
 
     void UpdateMusic();                       // Goi moi frame (cap nhat stream)
+    void SetMusicVolume(float vol);           // Dat am luong nhac nen
+    void SetSfxVolume(float vol);             // Dat am luong hieu ung
 
 private:
     // Am thanh hieu ung
@@ -31,6 +33,10 @@ private:
     // Nhac nen
     Music bgm{};
     bool bgmLoaded = false;
+
+    // Am luong
+    float currentMusicVol = 0.5f;
+    float currentSfxVol   = 1.0f;
 
     // Phat sound an toan (chi phat neu sound da load thanh cong)
     void PlaySoundSafe(Sound s);
