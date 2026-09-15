@@ -11,3 +11,24 @@ GameSetting::GameSetting() {
     modalBounds   = { (SCREEN_W - mw) * 0.5f, (SCREEN_H - mh) * 0.5f, mw, mh };
     gearBtnBounds = { (float)(SCREEN_W - 74), 18.0f, 48.0f, 48.0f };
 }
+
+// MODAL STATE MANAGEMENT
+void GameSetting::OpenModal() {
+    isModalOpen = true;
+    showInfoModal = false;
+}
+
+void GameSetting::CloseModal() {
+    isModalOpen = false;
+    showInfoModal = false;
+}
+
+void GameSetting::ToggleModal() {
+    isModalOpen = !isModalOpen;
+    showInfoModal = false;
+}
+
+bool GameSetting::CheckSettingsButtonClicked() {
+    Vector2 mouse = GetMousePosition();
+    return CheckCollisionPointRec(mouse, gearBtnBounds) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+}
