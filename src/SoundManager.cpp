@@ -48,3 +48,11 @@ void SoundManager::PlayDrop() {
 void SoundManager::PlayHold() {
     PlaySoundSafe(sfxHold);
 }
+
+void SoundManager::PlayLineClear(int lineCount) {
+    if (lineCount >= 4) {
+        PlaySoundSafe(sfxClear4);
+    } else {
+        PlaySoundSafe(sfxClear);
+    }
+}
