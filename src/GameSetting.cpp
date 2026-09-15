@@ -558,3 +558,35 @@ bool GameSetting::IsKeySoftDrop() const {
 bool GameSetting::IsKeyHardDrop() const {
     return IsKeyPressed(keyHardDrop);
 }
+
+bool GameSetting::IsKeyRotateCW() const {
+    return IsKeyPressed(keyRotateCW) || IsKeyPressed(keyRotateCW2) || IsKeyPressed(keyRotateCW3);
+}
+
+bool GameSetting::IsKeyRotateCCW() const {
+    return IsKeyPressed(keyRotateCCW) || IsKeyPressed(keyRotateCCW2);
+}
+
+bool GameSetting::IsKeyHold() const {
+    return IsKeyPressed(keyHold) || IsKeyPressed(keyHold2) || IsKeyPressed(keyHold3);
+}
+
+bool GameSetting::IsKeyPause() const {
+    return IsKeyPressed(keyPause);
+}
+
+bool GameSetting::IsKeyRestart() const {
+    return IsKeyPressed(keyRestart);
+}
+
+bool GameSetting::IsKeyMoveLeftDown() const {
+    return IsKeyDown(keyMoveLeft) || IsKeyDown(keyMoveLeft2);
+}
+
+bool GameSetting::IsKeyMoveRightDown() const {
+    return IsKeyDown(keyMoveRight) || IsKeyDown(keyMoveRight2);
+}
+
+bool GameSetting::IsKeySoftDropDown() const {
+    return IsKeyDown(keySoftDrop) || IsKeyDown(keySoftDrop2);
+}
