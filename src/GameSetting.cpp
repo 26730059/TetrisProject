@@ -43,3 +43,44 @@ void GameSetting::ToggleSfx(SoundManager& sound) {
     sfxEnabled = !sfxEnabled;
     sound.SetSfxVolume(sfxEnabled ? sfxVolume : 0.0f);
 }
+
+// DO KHO (DIFFICULTY)
+void GameSetting::SetDifficulty(Difficulty d) {
+    difficulty = d;
+    switch (difficulty) {
+        case DIFF_EASY:
+            baseGravity   = 1.15f;
+            gravityStep   = 0.035f;
+            minGravity    = 0.16f;
+            lockDelay     = 0.65f;
+            break;
+        case DIFF_NORMAL:
+            baseGravity   = 0.80f;
+            gravityStep   = 0.060f;
+            minGravity    = 0.08f;
+            lockDelay     = 0.50f;
+            break;
+        case DIFF_HARD:
+            baseGravity   = 0.45f;
+            gravityStep   = 0.075f;
+            minGravity    = 0.03f;
+            lockDelay     = 0.35f;
+            break;
+        default:
+            break;
+    }
+}
+
+const char* GameSetting::GetDifficultyName() const {
+    switch (difficulty) {
+        case DIFF_EASY:   return "Easy";
+        case DIFF_NORMAL: return "Normal";
+        case DIFF_HARD:   return "Hard";
+        default:          return "Normal";
+    }
+}
+
+float GameSetting::GetGravityInterval(int level) const {
+    float interval = baseGravity - (level - 1) * gravityStep;
+    return std::max(minGravity, interval);
+}
