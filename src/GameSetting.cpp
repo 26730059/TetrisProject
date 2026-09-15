@@ -205,3 +205,34 @@ void GameSetting::DrawGearIcon(float cx, float cy, float size, Color col) {
     DrawCircle((int)cx, (int)cy, r, col);
     DrawCircle((int)cx, (int)cy, r * 0.42f, Color{28, 28, 32, 255});
 }
+
+void GameSetting::DrawCloseIcon(float cx, float cy, float size, Color col) {
+    float hs = size * 0.32f;
+    DrawLineEx({cx - hs, cy - hs}, {cx + hs, cy + hs}, 3.8f, col);
+    DrawLineEx({cx + hs, cy - hs}, {cx - hs, cy + hs}, 3.8f, col);
+}
+
+void GameSetting::DrawInfoIcon(float cx, float cy, float size, Color col) {
+    // Cham tren dau
+    DrawCircle((int)cx, (int)(cy - size * 0.22f), size * 0.10f, col);
+    // Than chu i
+    DrawRectangleRounded(
+        Rectangle{ cx - size * 0.09f, cy - size * 0.06f, size * 0.18f, size * 0.34f },
+        0.4f, 4, col);
+}
+
+// VE NUT GEAR (SETTINGS) O GOC TREN PHAI MAN HINH
+void GameSetting::DrawSettingsButton() {
+    Vector2 mouse = GetMousePosition();
+    bool hover = CheckCollisionPointRec(mouse, gearBtnBounds);
+
+    Color bg = hover ? Color{45, 45, 52, 240} : Color{30, 30, 35, 210};
+    Color border = hover ? Color{245, 178, 38, 255} : Color{60, 60, 68, 255};
+
+    DrawRectangleRounded(gearBtnBounds, 0.22f, 6, bg);
+    DrawRectangleRoundedLinesEx(gearBtnBounds, 0.22f, 6, 2.0f, border);
+
+    float cx = gearBtnBounds.x + gearBtnBounds.width * 0.5f;
+    float cy = gearBtnBounds.y + gearBtnBounds.height * 0.5f;
+    DrawGearIcon(cx, cy, 26.0f, hover ? Color{245, 220, 130, 255} : Color{200, 200, 210, 255});
+}
