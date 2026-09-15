@@ -590,3 +590,77 @@ bool GameSetting::IsKeyMoveRightDown() const {
 bool GameSetting::IsKeySoftDropDown() const {
     return IsKeyDown(keySoftDrop) || IsKeyDown(keySoftDrop2);
 }
+
+void GameSetting::SaveToFile(const char* path) const {
+    std::ofstream file(path);
+    if (!file.is_open()) return;
+
+    file << "# Tetris Game Settings\n";
+    file << "musicEnabled=" << (musicEnabled ? 1 : 0) << "\n";
+    file << "sfxEnabled=" << (sfxEnabled ? 1 : 0) << "\n";
+    file << "difficulty=" << (int)difficulty << "\n";
+
+    file << "\n# Audio Volumes\n";
+    file << "musicVolume=" << musicVolume << "\n";
+    file << "sfxVolume=" << sfxVolume << "\n";
+
+    file << "\n# Key bindings\n";
+    file << "keyMoveLeft=" << keyMoveLeft << "\n";
+    file << "keyMoveLeft2=" << keyMoveLeft2 << "\n";
+    file << "keyMoveRight=" << keyMoveRight << "\n";
+    file << "keyMoveRight2=" << keyMoveRight2 << "\n";
+    file << "keySoftDrop=" << keySoftDrop << "\n";
+    file << "keySoftDrop2=" << keySoftDrop2 << "\n";
+    file << "keyHardDrop=" << keyHardDrop << "\n";
+    file << "keyRotateCW=" << keyRotateCW << "\n";
+    file << "keyRotateCW2=" << keyRotateCW2 << "\n";
+    file << "keyRotateCW3=" << keyRotateCW3 << "\n";
+    file << "keyRotateCCW=" << keyRotateCCW << "\n";
+    file << "keyRotateCCW2=" << keyRotateCCW2 << "\n";
+    file << "keyHold=" << keyHold << "\n";
+    file << "keyHold2=" << keyHold2 << "\n";
+    file << "keyHold3=" << keyHold3 << "\n";
+    file << "keyPause=" << keyPause << "\n";
+    file << "keyRestart=" << keyRestart << "\n";
+
+    file.close();
+}
+
+void GameSetting::LoadFromFile(const char* path) {
+    std::ifstream file(path);
+    if (!file.is_open()) return;
+
+    std::string line;
+    while (std::getline(file, line)) {
+        if (line.empty() || line[0] == '#') continue;
+        size_t eq = line.find('=');
+        if (eq == std::string::npos) continue;
+
+        std::string key = line.substr(0, eq);
+        std::string val = line.substr(eq + 1);
+
+        if (key == "musicEnabled")      musicEnabled = (std::stoi(val) != 0);
+        else if (key == "sfxEnabled")   sfxEnabled   = (std::stoi(val) != 0);
+        else if (key == "difficulty")   SetDifficulty((Difficulty)std::stoi(val));
+        else if (key == "musicVolume")  musicVolume  = std::stof(val);
+        else if (key == "sfxVolume")    sfxVolume    = std::stof(val);
+        else if (key == "keyMoveLeft")  keyMoveLeft  = std::stoi(val);
+        else if (key == "keyMoveLeft2") keyMoveLeft2 = std::stoi(val);
+        else if (key == "keyMoveRight") keyMoveRight = std::stoi(val);
+        else if (key == "keyMoveRight2")keyMoveRight2= std::stoi(val);
+        else if (key == "keySoftDrop")  keySoftDrop  = std::stoi(val);
+        else if (key == "keySoftDrop2") keySoftDrop2 = std::stoi(val);
+        else if (key == "keyHardDrop")  keyHardDrop  = std::stoi(val);
+        else if (key == "keyRotateCW")  keyRotateCW  = std::stoi(val);
+        else if (key == "keyRotateCW2") keyRotateCW2 = std::stoi(val);
+        else if (key == "keyRotateCW3") keyRotateCW3 = std::stoi(val);
+        else if (key == "keyRotateCCW") keyRotateCCW = std::stoi(val);
+        else if (key == "keyRotateCCW2")keyRotateCCW2= std::stoi(val);
+        else if (key == "keyHold")      keyHold      = std::stoi(val);
+        else if (key == "keyHold2")     keyHold2     = std::stoi(val);
+        else if (key == "keyHold3")     keyHold3     = std::stoi(val);
+        else if (key == "keyPause")     keyPause     = std::stoi(val);
+        else if (key == "keyRestart")   keyRestart   = std::stoi(val);
+    }
+    file.close();
+}
