@@ -85,47 +85,6 @@ float GameSetting::GetGravityInterval(int level) const {
     return std::max(minGravity, interval);
 }
 
-// DO KHO (DIFFICULTY)
-void GameSetting::SetDifficulty(Difficulty d) {
-    difficulty = d;
-    switch (difficulty) {
-        case DIFF_EASY:
-            baseGravity   = 1.15f;
-            gravityStep   = 0.035f;
-            minGravity    = 0.16f;
-            lockDelay     = 0.65f;
-            break;
-        case DIFF_NORMAL:
-            baseGravity   = 0.80f;
-            gravityStep   = 0.060f;
-            minGravity    = 0.08f;
-            lockDelay     = 0.50f;
-            break;
-        case DIFF_HARD:
-            baseGravity   = 0.45f;
-            gravityStep   = 0.075f;
-            minGravity    = 0.03f;
-            lockDelay     = 0.35f;
-            break;
-        default:
-            break;
-    }
-}
-
-const char* GameSetting::GetDifficultyName() const {
-    switch (difficulty) {
-        case DIFF_EASY:   return "Easy";
-        case DIFF_NORMAL: return "Normal";
-        case DIFF_HARD:   return "Hard";
-        default:          return "Normal";
-    }
-}
-
-float GameSetting::GetGravityInterval(int level) const {
-    float interval = baseGravity - (level - 1) * gravityStep;
-    return std::max(minGravity, interval);
-}
-
 // HELPER VE BUTTON 3D VA CAC ICON
 void GameSetting::DrawBeveledButton(Rectangle rect, Color topColor, Color btmColor, float roundness) {
     // 1. Shadow / Bottom bevel
@@ -192,18 +151,29 @@ void GameSetting::DrawHomeIcon(float cx, float cy, float size, Color col) {
 }
 
 void GameSetting::DrawGearIcon(float cx, float cy, float size, Color col) {
-    float r = size * 0.36f;
-    int teeth = 8;
-    for (int i = 0; i < teeth; i++) {
+    // Gear vector 8 rang: form don gian, ro net o kich thuoc 27px cua nut Settings.
+    constexpr int teeth = 8;
+    float coreRadius = size * 0.285f;
+    float toothLength = size * 0.205f;
+    float toothWidth = size * 0.125f;
+
+    for (int i = 0; i < teeth; ++i) {
         float angle = i * (360.0f / teeth);
         float rad = angle * DEG2RAD;
-        float tx = cx + cosf(rad) * (r + 3.0f);
-        float ty = cy + sinf(rad) * (r + 3.0f);
-        DrawRectanglePro(Rectangle{tx, ty, size * 0.22f, size * 0.16f},
-                         Vector2{size * 0.11f, size * 0.08f}, angle, col);
+        float distance = coreRadius + toothLength * 0.36f;
+        float tx = cx + cosf(rad) * distance;
+        float ty = cy + sinf(rad) * distance;
+
+        // Răng được xoay theo hướng xuyên tâm để hình gọn và đều.
+        DrawRectanglePro(Rectangle{tx, ty, toothLength, toothWidth},
+                         Vector2{toothLength * 0.5f, toothWidth * 0.5f}, angle, col);
     }
-    DrawCircle((int)cx, (int)cy, r, col);
-    DrawCircle((int)cx, (int)cy, r * 0.42f, Color{28, 28, 32, 255});
+
+    // Vòng ngoài dày tạo silhouette rõ; hub lục giác cho cảm giác sci-fi.
+    DrawCircleV(Vector2{cx, cy}, coreRadius, col);
+    DrawCircleLines((int)cx, (int)cy, coreRadius * 0.72f, Color{210, 252, 255, 150});
+    DrawPoly(Vector2{cx, cy}, 6, coreRadius * 0.48f, 30.0f, Color{10, 18, 44, 255});
+    DrawPolyLines(Vector2{cx, cy}, 6, coreRadius * 0.48f, 30.0f, Color{151, 239, 255, 200});
 }
 
 void GameSetting::DrawCloseIcon(float cx, float cy, float size, Color col) {
@@ -225,16 +195,42 @@ void GameSetting::DrawInfoIcon(float cx, float cy, float size, Color col) {
 void GameSetting::DrawSettingsButton() {
     Vector2 mouse = GetMousePosition();
     bool hover = CheckCollisionPointRec(mouse, gearBtnBounds);
+    bool pressed = hover && IsMouseButtonDown(MOUSE_BUTTON_LEFT);
 
-    Color bg = hover ? Color{45, 45, 52, 240} : Color{30, 30, 35, 210};
-    Color border = hover ? Color{245, 178, 38, 255} : Color{60, 60, 68, 255};
+    // Neon cyan/purple glow: tang do sang khi hover nhung van hop nen toi.
+    Color glowOuter = hover ? Color{78, 104, 255, 46} : Color{48, 92, 205, 22};
+    Color glowInner = hover ? Color{54, 238, 255, 68} : Color{54, 165, 255, 30};
+    Rectangle outerGlow = { gearBtnBounds.x - 5.0f, gearBtnBounds.y - 5.0f,
+                            gearBtnBounds.width + 10.0f, gearBtnBounds.height + 10.0f };
+    Rectangle innerGlow = { gearBtnBounds.x - 2.0f, gearBtnBounds.y - 2.0f,
+                            gearBtnBounds.width + 4.0f, gearBtnBounds.height + 4.0f };
+    DrawRectangleRounded(outerGlow, 0.30f, 8, glowOuter);
+    DrawRectangleRounded(innerGlow, 0.27f, 8, glowInner);
 
-    DrawRectangleRounded(gearBtnBounds, 0.22f, 6, bg);
-    DrawRectangleRoundedLinesEx(gearBtnBounds, 0.22f, 6, 2.0f, border);
+    // Bóng đổ và mặt nút beveled tạo chiều sâu.
+    Rectangle shadow = { gearBtnBounds.x, gearBtnBounds.y + 3.0f,
+                         gearBtnBounds.width, gearBtnBounds.height };
+    DrawRectangleRounded(shadow, 0.22f, 8, Color{7, 10, 25, 200});
 
-    float cx = gearBtnBounds.x + gearBtnBounds.width * 0.5f;
-    float cy = gearBtnBounds.y + gearBtnBounds.height * 0.5f;
-    DrawGearIcon(cx, cy, 26.0f, hover ? Color{245, 220, 130, 255} : Color{200, 200, 210, 255});
+    float pressOffset = pressed ? 2.0f : 0.0f;
+    Rectangle face = { gearBtnBounds.x, gearBtnBounds.y + pressOffset,
+                       gearBtnBounds.width, gearBtnBounds.height - 2.0f };
+    Color faceColor = hover ? Color{23, 34, 71, 248} : Color{18, 25, 52, 238};
+    Color border = hover ? Color{76, 243, 255, 255} : Color{80, 125, 228, 230};
+    DrawRectangleRounded(face, 0.22f, 8, faceColor);
+    DrawRectangleRoundedLinesEx(face, 0.22f, 8, hover ? 2.2f : 1.6f, border);
+
+    // Điểm sáng nhỏ ở mép trên, nhấn mạnh phong cách sci-fi.
+    DrawLineEx({face.x + 10.0f, face.y + 4.0f},
+               {face.x + face.width - 10.0f, face.y + 4.0f},
+               1.2f, hover ? Color{175, 252, 255, 190} : Color{118, 168, 255, 110});
+
+    float cx = face.x + face.width * 0.5f;
+    float cy = face.y + face.height * 0.5f;
+    Color iconShadow = hover ? Color{91, 55, 220, 170} : Color{91, 55, 220, 100};
+    Color iconColor = hover ? Color{122, 248, 255, 255} : Color{101, 194, 255, 255};
+    DrawGearIcon(cx + 1.0f, cy + 1.5f, 27.0f, iconShadow);
+    DrawGearIcon(cx, cy, 27.0f, iconColor);
 }
 
 // UPDATE MODAL INPUT
