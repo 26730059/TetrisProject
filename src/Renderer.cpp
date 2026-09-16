@@ -145,69 +145,40 @@ void Renderer::DrawPanelFrame(int x, int y, int w, int h, const char* title) {
 }
 
 void Renderer::DrawBoardBackground() {
-    // Nen tong the man hinh — xam den hien dai
-    ClearBackground(Color{18, 18, 22, 255});
+    // 1. Ve nen Chanh Dien (Gradient Nau Do)
+    DrawRectangleGradientV(0, 0, SCREEN_W, SCREEN_H, Color{33, 16, 13, 255}, Color{22, 12, 10, 255});
 
-    // Hieu ung vignette/gradient rat nhe cho toan man hinh
-    for (int i = 0; i < SCREEN_H; i += 2) {
-        float t = (float)i / SCREEN_H;
-        unsigned char c = (unsigned char)(16 + t * 8);
-        DrawLine(0, i, SCREEN_W, i, Color{c, c, (unsigned char)(c + 3), 255});
+    // 2. Ve Xa ngang go tren cung (Chua co mai ngoi)
+    DrawRectangle(0, 0, SCREEN_W, 55, Color{74, 23, 18, 255});
+    DrawRectangle(0, 53, SCREEN_W, 2, Color{201, 155, 69, 255});
+    DrawRectangle(0, 0, SCREEN_W, 6, Color{40, 10, 8, 255});
+
+    // 3. Ve hai Cot do son mai o hai ben man hinh
+    DrawRectangle(45, 55, 45, SCREEN_H - 55, Color{138, 45, 33, 255});
+    DrawRectangle(50, 55, 5, SCREEN_H - 55, Color{40, 10, 8, 255});
+    DrawRectangle(42, 55, 51, 8, Color{201, 155, 69, 255});
+    DrawRectangle(1185, 55, 45, SCREEN_H - 55, Color{138, 45, 33, 255});
+    DrawRectangle(1190, 55, 5, SCREEN_H - 55, Color{40, 10, 8, 255});
+    DrawRectangle(1182, 55, 51, 8, Color{201, 155, 69, 255});
+
+    // 4. Ve vien khung Board kieu Chanh dien co ban
+    Rectangle outer = { BOARD_OFFSET_X - 14.0f, BOARD_OFFSET_Y - 14.0f, BOARD_PIXEL_W + 28.0f, BOARD_PIXEL_H + 28.0f };
+    DrawRectangleRounded(outer, 0.02f, 4, Color{40, 10, 8, 255});
+    Rectangle wood = { BOARD_OFFSET_X - 10.0f, BOARD_OFFSET_Y - 10.0f, BOARD_PIXEL_W + 20.0f, BOARD_PIXEL_H + 20.0f };
+    DrawRectangleRounded(wood, 0.02f, 4, Color{138, 45, 33, 255});
+    Rectangle innerGold = { BOARD_OFFSET_X - 2.0f, BOARD_OFFSET_Y - 2.0f, BOARD_PIXEL_W + 4.0f, BOARD_PIXEL_H + 4.0f };
+    DrawRectangleLinesEx(innerGold, 2.0f, Color{201, 155, 69, 255});
+
+    // 5. Nen toi cua bang Tetris
+    DrawRectangle(BOARD_OFFSET_X, BOARD_OFFSET_Y, BOARD_PIXEL_W, BOARD_PIXEL_H, Color{20, 18, 19, 255});
+
+    // Ve Grid luoi
+    Color gridColor = {48, 42, 40, 100};
+    for (int i = 0; i <= BOARD_W; ++i) {
+        DrawLine(BOARD_OFFSET_X + i * TILE, BOARD_OFFSET_Y, BOARD_OFFSET_X + i * TILE, BOARD_OFFSET_Y + BOARD_PIXEL_H, gridColor);
     }
-
-    int boardPad = 8;
-    // Khung ngoai board (outer frame)
-    DrawRectangleRounded(
-        {(float)(BOARD_OFFSET_X - boardPad - 4), (float)(BOARD_OFFSET_Y - boardPad - 4),
-         (float)(BOARD_PIXEL_W + (boardPad + 4) * 2), (float)(BOARD_PIXEL_H + (boardPad + 4) * 2)},
-        0.025f, 6, Color{22, 22, 25, 255});
-
-    // Vien kim loai toi quanh board
-    DrawRectangleRoundedLinesEx(
-        {(float)(BOARD_OFFSET_X - boardPad - 4), (float)(BOARD_OFFSET_Y - boardPad - 4),
-         (float)(BOARD_PIXEL_W + (boardPad + 4) * 2), (float)(BOARD_PIXEL_H + (boardPad + 4) * 2)},
-        0.025f, 6, 2.5f, Color{48, 48, 54, 255});
-
-    // Nen ben trong board — duong ke luoi toi (#1E1E20)
-    DrawRectangle(BOARD_OFFSET_X, BOARD_OFFSET_Y,
-                  BOARD_PIXEL_W, BOARD_PIXEL_H,
-                  Color{26, 26, 28, 255});
-
-    // Ve cac o luoi trong (empty grid cells) tao nen carô xam dam nhu trong anh mau
-    for (int y = 0; y < BOARD_H; y++) {
-        for (int x = 0; x < BOARD_W; x++) {
-            int cx = BOARD_OFFSET_X + x * TILE;
-            int cy = BOARD_OFFSET_Y + y * TILE;
-            // O carô nhe
-            DrawRectangle(cx + 1, cy + 1, TILE - 2, TILE - 2, Color{36, 36, 39, 255});
-        }
-    }
-
-    // Duong ke vien quanh luoi
-    DrawRectangleLines(BOARD_OFFSET_X, BOARD_OFFSET_Y,
-                       BOARD_PIXEL_W, BOARD_PIXEL_H,
-                       Color{20, 20, 22, 255});
-}
-
-// VE CAC KHOI DA KHOA TREN BOARD
-void Renderer::DrawLockedBlocks(const GameLogic& logic) {
-    const auto& clearRows = logic.GetClearRows();
-    float clearProgress = logic.GetClearAnimProgress();
-
-    for (int y = 0; y < BOARD_H; y++) {
-        bool clearing = std::find(clearRows.begin(), clearRows.end(), y) != clearRows.end();
-        for (int x = 0; x < BOARD_W; x++) {
-            int t = logic.GetCell(x, y);
-            if (t == -1) continue;
-
-            unsigned char a = 255;
-            if (clearing) a = (unsigned char)(255 * clearProgress);
-
-            Color color = GetPieceColor((PieceType)t);
-            DrawGlossyBlock(BOARD_OFFSET_X + x * TILE,
-                            BOARD_OFFSET_Y + y * TILE,
-                            TILE, color, a);
-        }
+    for (int i = 0; i <= BOARD_H; ++i) {
+        DrawLine(BOARD_OFFSET_X, BOARD_OFFSET_Y + i * TILE, BOARD_OFFSET_X + BOARD_PIXEL_W, BOARD_OFFSET_Y + i * TILE, gridColor);
     }
 }
 
@@ -360,3 +331,4 @@ void Renderer::DrawGameOverOverlay() {
     int tw2 = MeasureText(text2, 22);
     DrawText(text2, SCREEN_W / 2 - tw2 / 2, SCREEN_H / 2 + 30, 22, Color{200, 200, 210, 220});
 }
+
