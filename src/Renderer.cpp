@@ -80,13 +80,19 @@ void Renderer::DrawLockedBlocks(const GameLogic& logic) {
 }
 
 void Renderer::DrawCurrentPiece(const ActivePiece& piece) {
-    Color col = GetPieceColor(piece.type);
+    Color baseCol = GetPieceColor(piece.type);
+    
+    // Hieu ung nhip tho (Pulsing Glow): Sang len toi da 50 don vi theo thoi gian thuc
+    float time = (float)GetTime();
+    float pulse = (sinf(time * 8.0f) + 1.0f) * 0.5f; // Giao dong 0.0 -> 1.0
+    Color glowCol = Lighten(baseCol, (int)(50 * pulse));
+
     for (int i = 0; i < 4; i++) {
         int px = piece.x + LOCAL_SHAPES[piece.type][piece.rot][i][0];
         int py = piece.y + LOCAL_SHAPES[piece.type][piece.rot][i][1];
         if (py >= 0) {
             DrawGlossyBlock(BOARD_OFFSET_X + px * TILE, 
-                            BOARD_OFFSET_Y + py * TILE, TILE, col, 255);
+                            BOARD_OFFSET_Y + py * TILE, TILE, glowCol, 255);
         }
     }
 }
