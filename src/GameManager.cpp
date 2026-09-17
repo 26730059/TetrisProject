@@ -64,6 +64,30 @@ void GameManager::Update(float dt) {
         settings.linesPerLevel,
         settings.scoreTable,
         settings.softDropPoints);
+
+    // Xu ly cac su kien game phat ra tu GameLogic de phat am thanh
+    for (const auto& ev : logic.GetEvents()) {
+        switch (ev.type) {
+            case LogicEvent::Rotate:
+                sound.PlayRotate();
+                break;
+            case LogicEvent::HardDrop:
+                sound.PlayDrop();
+                break;
+            case LogicEvent::Hold:
+                sound.PlayHold();
+                break;
+            case LogicEvent::LineClear:
+                sound.PlayLineClear(ev.data);
+                break;
+            case LogicEvent::GameOver:
+                sound.PlayGameOver();
+                break;
+            default:
+                break;
+        }
+    }
+    logic.ClearEvents();
 }
 
 void GameManager::HandleInput(float dt) {
