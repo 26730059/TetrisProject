@@ -15,7 +15,7 @@ add_subdirectory(third_party/raylib third_party/raylib_build)
 # Tu dong quet tat ca file .cpp trong src/
 # Khi cac thanh vien tao class moi (GameLogic.cpp, Renderer.cpp,...),
 # CMake se tu dong nhan dien va bien dich cung du an.
-file(GLOB CONFIGURE_DEPENDS SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB SRC_FILES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 if(NOT SRC_FILES)
     set(SRC_FILES src/main.cpp)
