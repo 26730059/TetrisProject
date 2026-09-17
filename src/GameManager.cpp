@@ -7,6 +7,10 @@ void GameManager::Init() {
     // Load cai dat tu file (neu co)
     settings.LoadFromFile("settings.cfg");
 
+    sound.Init();
+    sound.SetMusicVolume(settings.IsMusicEnabled() ? settings.musicVolume : 0.0f);
+    sound.SetSfxVolume(settings.IsSfxEnabled() ? settings.sfxVolume : 0.0f);
+
     renderer.LoadTextures();
 
     ResetGame();
@@ -22,6 +26,7 @@ void GameManager::ResetGame() {
 void GameManager::Run() {
     while (!WindowShouldClose()) {
         float dt = GetFrameTime();
+        sound.UpdateMusic();
         Update(dt);
 
         BeginDrawing();
@@ -131,5 +136,6 @@ void GameManager::Cleanup() {
     settings.SaveToFile("settings.cfg");
 
     renderer.UnloadTextures();
+    sound.Cleanup();
     CloseWindow();
 }
