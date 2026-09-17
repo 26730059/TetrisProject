@@ -18,9 +18,36 @@ void GameManager::ResetGame() {
 
 void GameManager::Run() {
     while (!WindowShouldClose()) {
+        float dt = GetFrameTime();
+        Update(dt);
+
         BeginDrawing();
         Render();
         EndDrawing();
+    }
+}
+
+void GameManager::Update(float dt) {
+    HandleInput(dt);
+}
+
+void GameManager::HandleInput(float dt) {
+    // Xoay
+    if (settings.IsKeyRotateCW()) {
+        logic.RotateCW();
+    }
+    if (settings.IsKeyRotateCCW()) {
+        logic.RotateCCW();
+    }
+
+    // Hold
+    if (settings.IsKeyHold()) {
+        logic.Hold();
+    }
+
+    // Hard drop
+    if (settings.IsKeyHardDrop()) {
+        logic.HardDrop(settings.hardDropPoints);
     }
 }
 

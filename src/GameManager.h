@@ -16,11 +16,17 @@ public:
     void Cleanup();
 
 private:
-    // Reset game choi lai tu dau
-    void ResetGame();
+    // Xu ly input (DAS/ARR, phim dieu khien)
+    void HandleInput(float dt);
+
+    // Update logic moi frame
+    void Update(float dt);
 
     // Goi Renderer ve toan bo giao dien
     void Render();
+
+    // Reset game choi lai tu dau
+    void ResetGame();
 
     GameLogic logic;       // Nguoi 1: Core Game Logic
     Renderer     renderer;    // Nguoi 2: UI/UX
