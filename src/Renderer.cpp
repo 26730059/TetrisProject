@@ -99,14 +99,30 @@ void Renderer::DrawCurrentPiece(const ActivePiece& piece) {
 
 void Renderer::DrawGhostPiece(const ActivePiece& ghost, PieceType type) {
     Color col = GetPieceColor(type);
+    float time = (float)GetTime();
+    
+    // Tinh toan do mo (alpha) dao dong de tao hieu ung Hologram chot tat
+    unsigned char fillAlpha = (unsigned char)(35 + sinf(time * 12.0f) * 20);
+    Color fillCol = {col.r, col.g, col.b, fillAlpha};
+    
+    // Vien ngoai cung dao dong do sang
+    unsigned char lineAlpha = (unsigned char)(180 + sinf(time * 8.0f) * 75);
+    Color lineCol = {col.r, col.g, col.b, lineAlpha};
+
     for (int i = 0; i < 4; i++) {
         int px = ghost.x + LOCAL_SHAPES[type][ghost.rot][i][0];
         int py = ghost.y + LOCAL_SHAPES[type][ghost.rot][i][1];
         if (py >= 0) {
             int screenX = BOARD_OFFSET_X + px * TILE;
             int screenY = BOARD_OFFSET_Y + py * TILE;
-            DrawRectangleLines(screenX, screenY, TILE, TILE, col);
-            DrawRectangle(screenX + 2, screenY + 2, TILE - 4, TILE - 4, Color{col.r, col.g, col.b, 40});
+            
+            // To nen hologram
+            DrawRectangle(screenX + 1, screenY + 1, TILE - 2, TILE - 2, fillCol);
+            DrawRectangleLines(screenX, screenY, TILE, TILE, lineCol);
+            
+            // Tia scanline (quet vach ngang) bieu dien du doan vi tri
+            float scanY = fmodf(time * 40.0f + i * 8.0f, (float)TILE);
+            DrawLine(screenX + 2, screenY + (int)scanY, screenX + TILE - 2, screenY + (int)scanY, Color{col.r, col.g, col.b, 100});
         }
     }
 }
