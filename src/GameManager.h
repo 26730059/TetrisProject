@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameLogic.h"
+#include "Renderer.h"
 
 class GameManager {
 public:
@@ -17,5 +18,9 @@ private:
     // Reset game choi lai tu dau
     void ResetGame();
 
+    // Goi Renderer ve toan bo giao dien
+    void Render();
+
     GameLogic logic;       // Nguoi 1: Core Game Logic
+    Renderer     renderer;    // Nguoi 2: UI/UX
 };
