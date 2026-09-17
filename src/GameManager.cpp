@@ -24,6 +24,17 @@ void GameManager::Run() {
 void GameManager::Render() {
     renderer.DrawBoardBackground();
     renderer.DrawLockedBlocks(logic);
+
+    if (!logic.IsGameOver() && !logic.IsClearAnimRunning()) {
+        ActivePiece ghost = logic.GetGhostPiece();
+        renderer.DrawGhostPiece(ghost, logic.GetCurrentPiece().type);
+        renderer.DrawCurrentPiece(logic.GetCurrentPiece());
+    }
+
+    renderer.DrawHoldPanel(logic.GetHoldType(), logic.CanHold());
+    renderer.DrawScorePanel(logic.GetScore(), logic.GetLevel(), logic.GetLines());
+    renderer.DrawNextPanel(logic.GetNextQueue());
+    renderer.DrawControlsPanel();
 }
 
 void GameManager::Cleanup() {
