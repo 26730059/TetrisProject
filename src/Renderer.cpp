@@ -283,6 +283,29 @@ void Renderer::DrawMiniPiece(PieceType type, int px, int py, unsigned char alpha
 void Renderer::DrawTempleBackground() {
     DrawRectangleGradientV(0, 0, SCREEN_W, SCREEN_H, TEMPLE_BG_TOP, TEMPLE_BG_BOT);
 
+    // --- Hieu ung Dom Dom (Ambient Fireflies) bay lo lung ---
+    float time = (float)GetTime();
+    for (int i = 0; i < 35; ++i) {
+        // Random vi tri dua vao index (khong dung rand() de giu nguyen trang thai khao khao)
+        float baseX = (float)((i * i * 37) % SCREEN_W);
+        float baseY = (float)((i * 53) % SCREEN_H);
+        
+        // Di chuyen cham rai bang sin/cos va troi dan len tren
+        float px = baseX + sinf(time * 0.4f + i) * 35.0f;
+        float py = baseY + cosf(time * 0.3f + i) * 25.0f - (time * 15.0f);
+        
+        // Wrap man hinh de hat bay mat thi moc lai tu duoi
+        float wrappedY = fmodf(py + SCREEN_H * 2.0f, (float)SCREEN_H);
+        float wrappedX = fmodf(px + SCREEN_W * 2.0f, (float)SCREEN_W);
+
+        // Hieu ung chot tat (Flickering)
+        unsigned char alpha = (unsigned char)(60 + (sinf(time * 1.5f + i) + 1.0f) * 60);
+        
+        float size = (i % 3 == 0) ? 2.5f : 1.5f;
+        DrawCircle((int)wrappedX, (int)wrappedY, size, Color{255, 220, 100, alpha}); // Loi sang
+        DrawCircle((int)wrappedX, (int)wrappedY, size * 2.5f, Color{255, 180, 50, (unsigned char)(alpha / 4)}); // Halo
+    }
+
     // Mai ngoi am duong
     DrawRectangle(0, 0, SCREEN_W, 35, Color{38, 18, 15, 255}); 
     for (int x = 12; x < SCREEN_W + 24; x += 24) {
