@@ -32,6 +32,19 @@ void GameManager::Run() {
 
 void GameManager::Update(float dt) {
     HandleInput(dt);
+
+    // Tinh gravity theo do kho / level / soft drop
+    float interval = logic.IsSoftDrop()
+        ? settings.softDropSpeed
+        : settings.GetGravityInterval(logic.GetLevel());
+
+    // Update toan bo Core Game Logic
+    logic.Update(dt,
+        interval,
+        settings.lockDelay,
+        settings.linesPerLevel,
+        settings.scoreTable,
+        settings.softDropPoints);
 }
 
 void GameManager::HandleInput(float dt) {
@@ -73,6 +86,9 @@ void GameManager::HandleInput(float dt) {
             }
         }
     }
+
+    // Soft drop
+    logic.SetSoftDrop(settings.IsKeySoftDropDown());
 }
 
 
