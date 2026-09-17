@@ -343,14 +343,6 @@ void GameSetting::DrawModal() {
     // 5. Ve vien Vang nam tren cung de khong bi Header che mat (chong tran vien)
     DrawRectangleRoundedLinesEx(modalBounds, 0.08f, 8, 2.5f, Color{201, 155, 69, 255}); // Antique Gold
 
-    // --- Nut Info [i] o goc trai header ---
-    Rectangle btnInfo = { mx + 16, my + 14, 40, 40 };
-    bool infoHover = CheckCollisionPointRec(mouse, btnInfo);
-    DrawBeveledButton(btnInfo,
-                      infoHover ? Color{104, 33, 28, 255} : Color{84, 23, 18, 255},
-                      Color{40, 10, 8, 255}, 0.22f);
-    DrawInfoIcon(btnInfo.x + 20, btnInfo.y + 20, 24.0f, Color{245, 222, 173, 255});
-
     // --- Tieu de "Settings" o giua ---
     const char* title = "Settings";
     int titleSize = 34;
@@ -488,32 +480,8 @@ void GameSetting::DrawModal() {
     DrawText(rstText, (int)(btnRestart.x + (btnRestart.width - rstTw) * 0.5f),
              (int)(btnRestart.y + 17), 28, Color{40, 20, 15, 255});
 
-    // POPUP THONG TIN NHOM (khi an nut [i])
-    if (showInfoModal) {
-        Rectangle infoBox = { mx + 20, my + 80, mw - 40, mh - 100 };
-        DrawRectangleRounded(infoBox, 0.08f, 8, Color{35, 25, 25, 255});
-        DrawRectangleRoundedLinesEx(infoBox, 0.08f, 8, 2.5f, Color{201, 155, 69, 255});
-
-        DrawText("TETRIS TEAM PROJECT", (int)(infoBox.x + 30), (int)(infoBox.y + 24), 22, Color{245, 222, 173, 255});
-        DrawLineEx(Vector2{infoBox.x + 30, infoBox.y + 54}, Vector2{infoBox.x + infoBox.width - 30, infoBox.y + 54}, 1.5f, Color{201, 155, 69, 255});
-
-        int ly = (int)(infoBox.y + 68);
-        int lstep = 30;
-        DrawText("Member 1: GameLogic (Logic & Board)", (int)(infoBox.x + 30), ly + lstep * 0, 16, Color{180, 160, 110, 255});
-        DrawText("Member 2: Renderer (UI/UX & Blocks)", (int)(infoBox.x + 30), ly + lstep * 1, 16, Color{180, 160, 110, 255});
-        DrawText("Member 3: SoundManager (Music & SFX)", (int)(infoBox.x + 30), ly + lstep * 2, 16, Color{180, 160, 110, 255});
-        DrawText("Member 4: GameSetting (Settings & Menu)", (int)(infoBox.x + 30), ly + lstep * 3, 16, Color{245, 222, 173, 255}); // Highlight
-        DrawText("Member 5: GameManager (Game Control)", (int)(infoBox.x + 30), ly + lstep * 4, 16, Color{180, 160, 110, 255});
-
-        Rectangle btnOk = { mx + mw * 0.5f - 60, my + 380, 120, 48 };
-        bool okHover = CheckCollisionPointRec(mouse, btnOk);
-        DrawBeveledButton(btnOk,
-                          okHover ? Color{180, 45, 33, 255} : Color{138, 45, 33, 255},
-                          Color{74, 23, 18, 255}, 0.25f);
-        int okTw = MeasureText("OK", 22);
-        DrawText("OK", (int)(btnOk.x + (btnOk.width - okTw) * 0.5f), (int)(btnOk.y + 12), 22, Color{245, 222, 173, 255});
     }
-}
+
 // KEY BINDING CHECKS
 const char* GameSetting::GetKeyName(int key) const {
     switch (key) {
@@ -660,3 +628,4 @@ void GameSetting::LoadFromFile(const char* path) {
     }
     file.close();
 }
+

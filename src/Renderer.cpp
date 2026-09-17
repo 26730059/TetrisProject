@@ -294,9 +294,11 @@ void Renderer::DrawTempleBackground() {
         float px = baseX + sinf(time * 0.4f + i) * 35.0f;
         float py = baseY + cosf(time * 0.3f + i) * 25.0f - (time * 15.0f);
         
-        // Wrap man hinh de hat bay mat thi moc lai tu duoi
-        float wrappedY = fmodf(py + SCREEN_H * 2.0f, (float)SCREEN_H);
-        float wrappedX = fmodf(px + SCREEN_W * 2.0f, (float)SCREEN_W);
+        // Wrap man hinh de hat bay mat thi moc lai tu duoi (Fix bug mất đom đóm)
+        float wrappedY = fmodf(py, (float)SCREEN_H);
+        if (wrappedY < 0) wrappedY += SCREEN_H;
+        float wrappedX = fmodf(px, (float)SCREEN_W);
+        if (wrappedX < 0) wrappedX += SCREEN_W;
 
         // Hieu ung chot tat (Flickering)
         unsigned char alpha = (unsigned char)(60 + (sinf(time * 1.5f + i) + 1.0f) * 60);
