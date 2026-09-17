@@ -312,14 +312,12 @@ void GameSetting::UpdateModal(SoundManager& sound, bool& outRestartGame) {
     }
 }
 
-// VE MODAL MENU THEO DESIGN THAM KHAO
 void GameSetting::DrawModal() {
     if (!isModalOpen) return;
-
     Vector2 mouse = GetMousePosition();
 
     // 1. Dark overlay lam mo game phia sau
-    DrawRectangle(0, 0, SCREEN_W, SCREEN_H, Fade(BLACK, 0.65f));
+    DrawRectangle(0, 0, SCREEN_W, SCREEN_H, Fade(BLACK, 0.75f));
 
     float mx = modalBounds.x;
     float my = modalBounds.y;
@@ -327,193 +325,195 @@ void GameSetting::DrawModal() {
     float mh = modalBounds.height;
 
     // 2. Bong do modal
-    DrawRectangleRounded(Rectangle{ mx + 6, my + 10, mw, mh }, 0.08f, 8, Fade(BLACK, 0.35f));
+    DrawRectangleRounded(Rectangle{ mx + 8, my + 12, mw, mh }, 0.08f, 8, Fade(BLACK, 0.5f));
 
-    // 3. Khung chinh mau kem/peach am ap (nhu trong anh)
-    DrawRectangleRounded(modalBounds, 0.08f, 8, Color{255, 243, 230, 255});
-    DrawRectangleRoundedLinesEx(modalBounds, 0.08f, 8, 2.5f, Color{236, 206, 182, 255});
+    // 3. Khung chinh mau den nham / go toi
+    DrawRectangleRounded(modalBounds, 0.08f, 8, Color{25, 23, 25, 250});
 
     // 4. Header Bar
     float headH = 68.0f;
-    DrawRectangleRounded(Rectangle{ mx, my, mw, headH + 12 }, 0.08f, 8, Color{255, 232, 215, 255});
-    DrawRectangle((int)mx, (int)(my + headH - 12), (int)mw, 14, Color{255, 232, 215, 255});
-    DrawLineEx({mx, my + headH}, {mx + mw, my + headH}, 2.0f, Color{235, 205, 180, 255});
+    // Tinh toan chinh xac do bo goc cua modal de Header bo goc khop 100%
+    float radius = std::min(mw, mh) * 0.08f; 
+    float headerRoundness = radius / std::min(mw, headH + 12);
+
+    DrawRectangleRounded(Rectangle{ mx, my, mw, headH + 12 }, headerRoundness, 8, Color{74, 23, 18, 255}); // Beam Wood
+    DrawRectangle((int)mx, (int)(my + headH - 12), (int)mw, 14, Color{74, 23, 18, 255});
+    DrawLineEx(Vector2{mx, my + headH}, Vector2{mx + mw, my + headH}, 2.0f, Color{201, 155, 69, 255});
+
+    // 5. Ve vien Vang nam tren cung de khong bi Header che mat (chong tran vien)
+    DrawRectangleRoundedLinesEx(modalBounds, 0.08f, 8, 2.5f, Color{201, 155, 69, 255}); // Antique Gold
 
     // --- Nut Info [i] o goc trai header ---
     Rectangle btnInfo = { mx + 16, my + 14, 40, 40 };
     bool infoHover = CheckCollisionPointRec(mouse, btnInfo);
     DrawBeveledButton(btnInfo,
-                      infoHover ? Color{205, 145, 95, 255} : Color{188, 125, 80, 255},
-                      Color{150, 95, 55, 255}, 0.22f);
-    DrawInfoIcon(btnInfo.x + 20, btnInfo.y + 20, 24.0f, WHITE);
+                      infoHover ? Color{104, 33, 28, 255} : Color{84, 23, 18, 255},
+                      Color{40, 10, 8, 255}, 0.22f);
+    DrawInfoIcon(btnInfo.x + 20, btnInfo.y + 20, 24.0f, Color{245, 222, 173, 255});
 
     // --- Tieu de "Settings" o giua ---
     const char* title = "Settings";
     int titleSize = 34;
     int tw = MeasureText(title, titleSize);
-    DrawText(title, (int)(mx + (mw - tw) * 0.5f + 1), (int)(my + 19), titleSize, Color{255, 215, 190, 255});
-    DrawText(title, (int)(mx + (mw - tw) * 0.5f), (int)(my + 18), titleSize, Color{175, 98, 48, 255});
+    DrawText(title, (int)(mx + (mw - tw) * 0.5f + 1), (int)(my + 19), titleSize, Color{10, 5, 5, 200});
+    DrawText(title, (int)(mx + (mw - tw) * 0.5f), (int)(my + 18), titleSize, Color{245, 222, 173, 255}); // Cream text
 
     // --- Nut Close [X] o goc phai header ---
     Rectangle btnClose = { mx + mw - 56, my + 14, 40, 40 };
     bool closeHover = CheckCollisionPointRec(mouse, btnClose);
     DrawBeveledButton(btnClose,
-                      closeHover ? Color{245, 75, 95, 255} : Color{232, 58, 78, 255},
-                      Color{175, 30, 45, 255}, 0.22f);
-    DrawCloseIcon(btnClose.x + 20, btnClose.y + 20, 20.0f, WHITE);
+                      closeHover ? Color{180, 45, 33, 255} : Color{138, 45, 33, 255}, // Column Red
+                      Color{70, 15, 10, 255}, 0.22f);
+    DrawCloseIcon(btnClose.x + 20, btnClose.y + 20, 20.0f, Color{245, 222, 173, 255});
 
     // ROW 1: SFX TOGGLE
     float sfxY = my + 98;
-    DrawText("SFX", (int)(mx + 50), (int)(sfxY + 12), 30, Color{175, 98, 48, 255});
+    DrawText("SFX", (int)(mx + 50), (int)(sfxY + 12), 30, Color{201, 155, 69, 255});
 
     Rectangle sfxTrack = { mx + 165, sfxY, 245, 56 };
-    // Nen track (mau kem nhat, viền am)
-    DrawRectangleRounded(sfxTrack, 0.40f, 6, Color{248, 222, 204, 255});
-    DrawRectangleRoundedLinesEx(sfxTrack, 0.40f, 6, 2.0f, Color{228, 192, 168, 255});
+    // Nen track
+    DrawRectangleRounded(sfxTrack, 0.40f, 6, Color{15, 12, 13, 255});
+    DrawRectangleRoundedLinesEx(sfxTrack, 0.40f, 6, 2.0f, Color{80, 50, 30, 255});
 
     float knobW = 95.0f, knobH = 50.0f;
+    // Diem nhan: Ngoc bich (Jade Green) cho ON
+    Color knobOnTop = Color{25, 185, 120, 255};
+    Color knobOnBot = Color{12, 110, 70, 255};
+    // OFF: Go toi
+    Color knobOffTop = Color{65, 30, 25, 255};
+    Color knobOffBot = Color{35, 15, 12, 255};
+
     if (sfxEnabled) {
-        // SFX BAT: Knob mau xanh ben trai (hien bieu tuong loa phat am)
         Rectangle knob = { sfxTrack.x + 3.0f, sfxTrack.y + 3.0f, knobW, knobH };
-        DrawBeveledButton(knob, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.35f);
-        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, WHITE, false);
-
-        // Bieu tuong mute ben phai track
-        DrawSpeakerIcon(sfxTrack.x + sfxTrack.width - 48.0f, sfxTrack.y + sfxTrack.height * 0.5f,
-                        28.0f, Color{195, 145, 110, 255}, true);
+        DrawBeveledButton(knob, knobOnTop, knobOnBot, 0.35f);
+        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, Color{245, 255, 245, 255}, false);
+        DrawSpeakerIcon(sfxTrack.x + sfxTrack.width - 48.0f, sfxTrack.y + sfxTrack.height * 0.5f, 28.0f, Color{80, 50, 30, 255}, true);
     } else {
-        // SFX TAT: Knob mau xanh ben phai (hien bieu tuong mute X) giong trong anh
         Rectangle knob = { sfxTrack.x + sfxTrack.width - knobW - 3.0f, sfxTrack.y + 3.0f, knobW, knobH };
-        DrawBeveledButton(knob, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.35f);
-        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, WHITE, true);
-
-        // Bieu tuong loa ben trai track
-        DrawSpeakerIcon(sfxTrack.x + 48.0f, sfxTrack.y + sfxTrack.height * 0.5f,
-                        28.0f, Color{195, 145, 110, 255}, false);
+        DrawBeveledButton(knob, knobOffTop, knobOffBot, 0.35f);
+        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, Color{200, 200, 200, 255}, true);
+        DrawSpeakerIcon(sfxTrack.x + 48.0f, sfxTrack.y + sfxTrack.height * 0.5f, 28.0f, Color{80, 50, 30, 255}, false);
     }
 
     // ROW 2: MUSIC TOGGLE
     float musY = my + 172;
-    DrawText("Music", (int)(mx + 50), (int)(musY + 12), 30, Color{175, 98, 48, 255});
+    DrawText("Music", (int)(mx + 50), (int)(musY + 12), 30, Color{201, 155, 69, 255});
 
     Rectangle musTrack = { mx + 165, musY, 245, 56 };
-    DrawRectangleRounded(musTrack, 0.40f, 6, Color{248, 222, 204, 255});
-    DrawRectangleRoundedLinesEx(musTrack, 0.40f, 6, 2.0f, Color{228, 192, 168, 255});
+    DrawRectangleRounded(musTrack, 0.40f, 6, Color{15, 12, 13, 255});
+    DrawRectangleRoundedLinesEx(musTrack, 0.40f, 6, 2.0f, Color{80, 50, 30, 255});
 
     if (musicEnabled) {
-        // MUSIC BAT: Knob mau xanh ben trai (hien am thanh phat) giong trong anh
         Rectangle knob = { musTrack.x + 3.0f, musTrack.y + 3.0f, knobW, knobH };
-        DrawBeveledButton(knob, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.35f);
-        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, WHITE, false);
-
-        // Bieu tuong mute mo ben phai
-        DrawSpeakerIcon(musTrack.x + musTrack.width - 48.0f, musTrack.y + musTrack.height * 0.5f,
-                        28.0f, Color{195, 145, 110, 255}, true);
+        DrawBeveledButton(knob, knobOnTop, knobOnBot, 0.35f);
+        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, Color{245, 255, 245, 255}, false);
+        DrawSpeakerIcon(musTrack.x + musTrack.width - 48.0f, musTrack.y + musTrack.height * 0.5f, 28.0f, Color{80, 50, 30, 255}, true);
     } else {
-        // MUSIC TAT: Knob mau xanh ben phai (hien bieu tuong mute X)
         Rectangle knob = { musTrack.x + musTrack.width - knobW - 3.0f, musTrack.y + 3.0f, knobW, knobH };
-        DrawBeveledButton(knob, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.35f);
-        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, WHITE, true);
-
-        // Bieu tuong loa mo ben trai
-        DrawSpeakerIcon(musTrack.x + 48.0f, musTrack.y + musTrack.height * 0.5f,
-                        28.0f, Color{195, 145, 110, 255}, false);
+        DrawBeveledButton(knob, knobOffTop, knobOffBot, 0.35f);
+        DrawSpeakerIcon(knob.x + knobW * 0.5f, knob.y + knobH * 0.5f, 32.0f, Color{200, 200, 200, 255}, true);
+        DrawSpeakerIcon(musTrack.x + 48.0f, musTrack.y + musTrack.height * 0.5f, 28.0f, Color{80, 50, 30, 255}, false);
     }
 
     // ROW 3: DO KHO (DIFFICULTY)
     float diffLabelY = my + 252;
-    DrawText("Difficulty", (int)(mx + 50), (int)diffLabelY, 24, Color{175, 98, 48, 255});
+    DrawText("Difficulty", (int)(mx + 50), (int)diffLabelY, 24, Color{201, 155, 69, 255});
 
     float diffY = my + 288;
     Rectangle optEasy   = { mx + 50, diffY, 114, 46 };
     Rectangle optNormal = { mx + 172, diffY, 114, 46 };
     Rectangle optHard   = { mx + 294, diffY, 116, 46 };
 
+    Color diffActiveTop = Color{138, 45, 33, 255}; // Column Red
+    Color diffActiveBot = Color{74, 23, 18, 255};  // Beam Wood
+    Color diffIdleBase  = Color{35, 25, 25, 255};
+    Color diffIdleBorder= Color{100, 70, 50, 255};
+    Color diffIdleText  = Color{180, 160, 110, 255}; // Cream Muted
+
     // Easy tab
     if (difficulty == DIFF_EASY) {
-        DrawBeveledButton(optEasy, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.25f);
+        DrawBeveledButton(optEasy, diffActiveTop, diffActiveBot, 0.25f);
         int tw1 = MeasureText("Easy", 22);
-        DrawText("Easy", (int)(optEasy.x + (optEasy.width - tw1) * 0.5f), (int)(optEasy.y + 11), 22, WHITE);
+        DrawText("Easy", (int)(optEasy.x + (optEasy.width - tw1) * 0.5f), (int)(optEasy.y + 11), 22, Color{245, 222, 173, 255});
     } else {
-        DrawRectangleRounded(optEasy, 0.25f, 4, Color{248, 224, 208, 255});
-        DrawRectangleRoundedLinesEx(optEasy, 0.25f, 4, 1.5f, Color{225, 195, 172, 255});
+        DrawRectangleRounded(optEasy, 0.25f, 4, diffIdleBase);
+        DrawRectangleRoundedLinesEx(optEasy, 0.25f, 4, 1.5f, diffIdleBorder);
         int tw1 = MeasureText("Easy", 20);
-        DrawText("Easy", (int)(optEasy.x + (optEasy.width - tw1) * 0.5f), (int)(optEasy.y + 13), 20, Color{170, 110, 70, 255});
+        DrawText("Easy", (int)(optEasy.x + (optEasy.width - tw1) * 0.5f), (int)(optEasy.y + 13), 20, diffIdleText);
     }
 
     // Normal tab
     if (difficulty == DIFF_NORMAL) {
-        DrawBeveledButton(optNormal, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.25f);
+        DrawBeveledButton(optNormal, diffActiveTop, diffActiveBot, 0.25f);
         int tw2 = MeasureText("Normal", 22);
-        DrawText("Normal", (int)(optNormal.x + (optNormal.width - tw2) * 0.5f), (int)(optNormal.y + 11), 22, WHITE);
+        DrawText("Normal", (int)(optNormal.x + (optNormal.width - tw2) * 0.5f), (int)(optNormal.y + 11), 22, Color{245, 222, 173, 255});
     } else {
-        DrawRectangleRounded(optNormal, 0.25f, 4, Color{248, 224, 208, 255});
-        DrawRectangleRoundedLinesEx(optNormal, 0.25f, 4, 1.5f, Color{225, 195, 172, 255});
+        DrawRectangleRounded(optNormal, 0.25f, 4, diffIdleBase);
+        DrawRectangleRoundedLinesEx(optNormal, 0.25f, 4, 1.5f, diffIdleBorder);
         int tw2 = MeasureText("Normal", 20);
-        DrawText("Normal", (int)(optNormal.x + (optNormal.width - tw2) * 0.5f), (int)(optNormal.y + 13), 20, Color{170, 110, 70, 255});
+        DrawText("Normal", (int)(optNormal.x + (optNormal.width - tw2) * 0.5f), (int)(optNormal.y + 13), 20, diffIdleText);
     }
 
     // Hard tab
     if (difficulty == DIFF_HARD) {
-        DrawBeveledButton(optHard, Color{88, 185, 58, 255}, Color{55, 140, 38, 255}, 0.25f);
+        DrawBeveledButton(optHard, diffActiveTop, diffActiveBot, 0.25f);
         int tw3 = MeasureText("Hard", 22);
-        DrawText("Hard", (int)(optHard.x + (optHard.width - tw3) * 0.5f), (int)(optHard.y + 11), 22, WHITE);
+        DrawText("Hard", (int)(optHard.x + (optHard.width - tw3) * 0.5f), (int)(optHard.y + 11), 22, Color{245, 222, 173, 255});
     } else {
-        DrawRectangleRounded(optHard, 0.25f, 4, Color{248, 224, 208, 255});
-        DrawRectangleRoundedLinesEx(optHard, 0.25f, 4, 1.5f, Color{225, 195, 172, 255});
+        DrawRectangleRounded(optHard, 0.25f, 4, diffIdleBase);
+        DrawRectangleRoundedLinesEx(optHard, 0.25f, 4, 1.5f, diffIdleBorder);
         int tw3 = MeasureText("Hard", 20);
-        DrawText("Hard", (int)(optHard.x + (optHard.width - tw3) * 0.5f), (int)(optHard.y + 13), 20, Color{170, 110, 70, 255});
+        DrawText("Hard", (int)(optHard.x + (optHard.width - tw3) * 0.5f), (int)(optHard.y + 13), 20, diffIdleText);
     }
 
     // ROW 4: ACTION BUTTONS [ HOME ] & [ RESTART ]
     float actY = my + 418;
 
-    // --- Nut HOME (Màu cam đất/đỏ cam) ---
+    // --- Nut HOME (Mau Do Son Mai) ---
     Rectangle btnHome = { mx + 50, actY, 155, 64 };
     bool homeHover = CheckCollisionPointRec(mouse, btnHome);
     DrawBeveledButton(btnHome,
-                      homeHover ? Color{245, 105, 65, 255} : Color{232, 92, 54, 255},
-                      Color{180, 55, 25, 255}, 0.22f);
-    DrawHomeIcon(btnHome.x + btnHome.width * 0.5f, btnHome.y + btnHome.height * 0.48f, 36.0f, WHITE);
+                      homeHover ? Color{160, 55, 40, 255} : Color{138, 45, 33, 255},
+                      Color{74, 23, 18, 255}, 0.22f);
+    DrawHomeIcon(btnHome.x + btnHome.width * 0.5f, btnHome.y + btnHome.height * 0.48f, 36.0f, Color{245, 222, 173, 255});
 
-    // --- Nut RESTART (Màu vàng cam ấm) ---
+    // --- Nut RESTART (Mau Vang Co) ---
     Rectangle btnRestart = { mx + 225, actY, 185, 64 };
     bool rstHover = CheckCollisionPointRec(mouse, btnRestart);
     DrawBeveledButton(btnRestart,
-                      rstHover ? Color{255, 192, 50, 255} : Color{248, 178, 38, 255},
-                      Color{198, 130, 18, 255}, 0.22f);
+                      rstHover ? Color{225, 175, 80, 255} : Color{201, 155, 69, 255},
+                      Color{140, 100, 30, 255}, 0.22f);
     const char* rstText = "Restart";
     int rstTw = MeasureText(rstText, 28);
     DrawText(rstText, (int)(btnRestart.x + (btnRestart.width - rstTw) * 0.5f),
-             (int)(btnRestart.y + 17), 28, WHITE);
+             (int)(btnRestart.y + 17), 28, Color{40, 20, 15, 255});
 
     // POPUP THONG TIN NHOM (khi an nut [i])
     if (showInfoModal) {
         Rectangle infoBox = { mx + 20, my + 80, mw - 40, mh - 100 };
-        DrawRectangleRounded(infoBox, 0.08f, 8, Color{255, 250, 245, 255});
-        DrawRectangleRoundedLinesEx(infoBox, 0.08f, 8, 2.5f, Color{210, 160, 120, 255});
+        DrawRectangleRounded(infoBox, 0.08f, 8, Color{35, 25, 25, 255});
+        DrawRectangleRoundedLinesEx(infoBox, 0.08f, 8, 2.5f, Color{201, 155, 69, 255});
 
-        DrawText("TETRIS TEAM PROJECT", (int)(infoBox.x + 30), (int)(infoBox.y + 24), 22, Color{175, 98, 48, 255});
-        DrawLineEx({infoBox.x + 30, infoBox.y + 54}, {infoBox.x + infoBox.width - 30, infoBox.y + 54}, 1.5f, Color{225, 190, 160, 255});
+        DrawText("TETRIS TEAM PROJECT", (int)(infoBox.x + 30), (int)(infoBox.y + 24), 22, Color{245, 222, 173, 255});
+        DrawLineEx(Vector2{infoBox.x + 30, infoBox.y + 54}, Vector2{infoBox.x + infoBox.width - 30, infoBox.y + 54}, 1.5f, Color{201, 155, 69, 255});
 
         int ly = (int)(infoBox.y + 68);
         int lstep = 30;
-        DrawText("Member 1: GameLogic (Logic & Board)", (int)(infoBox.x + 30), ly + lstep * 0, 16, Color{60, 40, 30, 255});
-        DrawText("Member 2: Renderer (UI/UX & Blocks)", (int)(infoBox.x + 30), ly + lstep * 1, 16, Color{60, 40, 30, 255});
-        DrawText("Member 3: SoundManager (Music & SFX)", (int)(infoBox.x + 30), ly + lstep * 2, 16, Color{60, 40, 30, 255});
-        DrawText("Member 4: GameSetting (Settings & Menu)", (int)(infoBox.x + 30), ly + lstep * 3, 16, Color{175, 98, 48, 255});
-        DrawText("Member 5: GameManager (Game Control)", (int)(infoBox.x + 30), ly + lstep * 4, 16, Color{60, 40, 30, 255});
+        DrawText("Member 1: GameLogic (Logic & Board)", (int)(infoBox.x + 30), ly + lstep * 0, 16, Color{180, 160, 110, 255});
+        DrawText("Member 2: Renderer (UI/UX & Blocks)", (int)(infoBox.x + 30), ly + lstep * 1, 16, Color{180, 160, 110, 255});
+        DrawText("Member 3: SoundManager (Music & SFX)", (int)(infoBox.x + 30), ly + lstep * 2, 16, Color{180, 160, 110, 255});
+        DrawText("Member 4: GameSetting (Settings & Menu)", (int)(infoBox.x + 30), ly + lstep * 3, 16, Color{245, 222, 173, 255}); // Highlight
+        DrawText("Member 5: GameManager (Game Control)", (int)(infoBox.x + 30), ly + lstep * 4, 16, Color{180, 160, 110, 255});
 
         Rectangle btnOk = { mx + mw * 0.5f - 60, my + 380, 120, 48 };
         bool okHover = CheckCollisionPointRec(mouse, btnOk);
         DrawBeveledButton(btnOk,
-                          okHover ? Color{88, 185, 58, 255} : Color{75, 168, 50, 255},
-                          Color{50, 125, 35, 255}, 0.25f);
+                          okHover ? Color{180, 45, 33, 255} : Color{138, 45, 33, 255},
+                          Color{74, 23, 18, 255}, 0.25f);
         int okTw = MeasureText("OK", 22);
-        DrawText("OK", (int)(btnOk.x + (btnOk.width - okTw) * 0.5f), (int)(btnOk.y + 12), 22, WHITE);
+        DrawText("OK", (int)(btnOk.x + (btnOk.width - okTw) * 0.5f), (int)(btnOk.y + 12), 22, Color{245, 222, 173, 255});
     }
 }
-
 // KEY BINDING CHECKS
 const char* GameSetting::GetKeyName(int key) const {
     switch (key) {
