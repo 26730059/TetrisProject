@@ -14,6 +14,9 @@ void GameManager::Init() {
 
 void GameManager::ResetGame() {
     logic.Reset();
+    dasTimer = 0.0f;
+    arrTimer = 0.0f;
+    dasDir = 0;
 }
 
 void GameManager::Run() {
@@ -49,7 +52,30 @@ void GameManager::HandleInput(float dt) {
     if (settings.IsKeyHardDrop()) {
         logic.HardDrop(settings.hardDropPoints);
     }
+
+    // Di chuyen ngang: DAS/ARR
+    int dir = 0;
+    if (settings.IsKeyMoveLeftDown()) dir = -1;
+    else if (settings.IsKeyMoveRightDown()) dir = 1;
+
+    if (dir != dasDir) {
+        dasDir = dir;
+        dasTimer = 0.0f;
+        if (dir != 0) logic.Move(dir, 0);
+    }
+    else if (dir != 0) {
+        dasTimer += dt;
+        if (dasTimer >= settings.dasDelay) {
+            arrTimer += dt;
+            if (arrTimer >= settings.arrSpeed) {
+                arrTimer = 0.0f;
+                logic.Move(dir, 0);
+            }
+        }
+    }
 }
+
+
 
 void GameManager::Render() {
     renderer.DrawBoardBackground();

@@ -31,4 +31,8 @@ private:
     GameLogic logic;       // Nguoi 1: Core Game Logic
     Renderer     renderer;    // Nguoi 2: UI/UX
     GameSetting  settings;    // Nguoi 4: Game Setting
+
+    float dasTimer = 0.0f;
+    float arrTimer = 0.0f;
+    int   dasDir = 0;
 };
