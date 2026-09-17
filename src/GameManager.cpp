@@ -36,6 +36,21 @@ void GameManager::Run() {
 }
 
 void GameManager::Update(float dt) {
+    // 1. Kiem tra mo/dong Settings Modal tu nut Gear ⚙️ hoac phim ESC / O
+    if (settings.CheckSettingsButtonClicked() || IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_O)) {
+        settings.ToggleModal();
+    }
+
+    // Neu Modal Settings dang mo: xu ly input modal va tam dung gameplay
+    if (settings.IsModalOpen()) {
+        bool restartReq = false;
+        settings.UpdateModal(sound, restartReq);
+        if (restartReq) {
+            ResetGame();
+        }
+        return;
+    }
+
     // Game over: cho phim restart
     if (logic.IsGameOver()) {
         if (settings.IsKeyRestart()) {
@@ -137,7 +152,9 @@ void GameManager::HandleInput(float dt) {
 
 
 void GameManager::Render() {
+
     renderer.DrawBoardBackground();
+
     renderer.DrawLockedBlocks(logic);
 
     if (!logic.IsGameOver() && !logic.IsClearAnimRunning()) {
@@ -151,8 +168,16 @@ void GameManager::Render() {
     renderer.DrawNextPanel(logic.GetNextQueue());
     renderer.DrawControlsPanel();
 
-    if (logic.IsPaused()) renderer.DrawPauseOverlay();
-    if (logic.IsGameOver()) renderer.DrawGameOverOverlay();
+    // Ve nut Gear (Settings) o goc tren phai
+    settings.DrawSettingsButton();
+
+    // Overlay pause / game over (chi hien khi khong mo modal)
+    if (logic.IsPaused() && !settings.IsModalOpen()) renderer.DrawPauseOverlay();
+    if (logic.IsGameOver() && !settings.IsModalOpen()) renderer.DrawGameOverOverlay();
+
+    // Neu Modal Settings dang mo: ve modal de len tren toan bo
+    if (settings.IsModalOpen()) {
+        settings.DrawModal();
 }
 
 void GameManager::Cleanup() {
