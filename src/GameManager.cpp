@@ -4,6 +4,9 @@ void GameManager::Init() {
     InitWindow(SCREEN_W, SCREEN_H, "Tetris - raylib");
     SetTargetFPS(60);
 
+    // Load cai dat tu file (neu co)
+    settings.LoadFromFile("settings.cfg");
+
     renderer.LoadTextures();
 
     ResetGame();
@@ -38,6 +41,9 @@ void GameManager::Render() {
 }
 
 void GameManager::Cleanup() {
+    // Luu cai dat truoc khi thoat
+    settings.SaveToFile("settings.cfg");
+
     renderer.UnloadTextures();
     CloseWindow();
 }

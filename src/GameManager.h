@@ -2,6 +2,7 @@
 
 #include "GameLogic.h"
 #include "Renderer.h"
+#include "GameSetting.h"
 
 class GameManager {
 public:
@@ -23,4 +24,5 @@ private:
 
     GameLogic logic;       // Nguoi 1: Core Game Logic
     Renderer     renderer;    // Nguoi 2: UI/UX
+    GameSetting  settings;    // Nguoi 4: Game Setting
 };
