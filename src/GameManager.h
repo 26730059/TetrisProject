@@ -29,7 +29,7 @@ private:
     // Reset game choi lai tu dau
     void ResetGame();
 
-    GameLogic logic;       // Nguoi 1: Core Game Logic
+    GameLogic    logic;       // Nguoi 1: Core Game Logic
     Renderer     renderer;    // Nguoi 2: UI/UX
     SoundManager sound;       // Nguoi 3: Sound Effect
     GameSetting  settings;    // Nguoi 4: Game Setting

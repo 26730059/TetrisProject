@@ -7,12 +7,14 @@ void GameManager::Init() {
     // Load cai dat tu file (neu co)
     settings.LoadFromFile("settings.cfg");
 
+    // Khoi tao cac thanh phan con
     sound.Init();
     sound.SetMusicVolume(settings.IsMusicEnabled() ? settings.musicVolume : 0.0f);
     sound.SetSfxVolume(settings.IsSfxEnabled() ? settings.sfxVolume : 0.0f);
 
     renderer.LoadTextures();
 
+    // Khoi tao game logic
     ResetGame();
 }
 
@@ -23,6 +25,7 @@ void GameManager::ResetGame() {
     dasDir = 0;
 }
 
+// GAME LOOP CHINH
 void GameManager::Run() {
     while (!WindowShouldClose()) {
         float dt = GetFrameTime();
@@ -65,6 +68,7 @@ void GameManager::Update(float dt) {
     }
     if (logic.IsPaused()) return;
 
+    // Xu ly input tu nguoi choi
     HandleInput(dt);
 
     // Tinh gravity theo do kho / level / soft drop
@@ -152,17 +156,20 @@ void GameManager::HandleInput(float dt) {
 
 
 void GameManager::Render() {
-
+    // Ve nen + luoi
     renderer.DrawBoardBackground();
 
+    // Ve cac khoi da khoa
     renderer.DrawLockedBlocks(logic);
 
+    // Ve ghost + khoi dang roi (chi khi chua game over va khong dang clear)
     if (!logic.IsGameOver() && !logic.IsClearAnimRunning()) {
         ActivePiece ghost = logic.GetGhostPiece();
         renderer.DrawGhostPiece(ghost, logic.GetCurrentPiece().type);
         renderer.DrawCurrentPiece(logic.GetCurrentPiece());
     }
 
+    // Ve cac panel
     renderer.DrawHoldPanel(logic.GetHoldType(), logic.CanHold());
     renderer.DrawScorePanel(logic.GetScore(), logic.GetLevel(), logic.GetLines());
     renderer.DrawNextPanel(logic.GetNextQueue());
@@ -178,6 +185,7 @@ void GameManager::Render() {
     // Neu Modal Settings dang mo: ve modal de len tren toan bo
     if (settings.IsModalOpen()) {
         settings.DrawModal();
+    }
 }
 
 void GameManager::Cleanup() {
