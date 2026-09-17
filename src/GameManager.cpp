@@ -31,6 +31,20 @@ void GameManager::Run() {
 }
 
 void GameManager::Update(float dt) {
+    // Game over: cho phim restart
+    if (logic.IsGameOver()) {
+        if (settings.IsKeyRestart()) {
+            ResetGame();
+        }
+        return;
+    }
+
+    // Pause
+    if (settings.IsKeyPause()) {
+        logic.TogglePause();
+    }
+    if (logic.IsPaused()) return;
+
     HandleInput(dt);
 
     // Tinh gravity theo do kho / level / soft drop
@@ -107,6 +121,9 @@ void GameManager::Render() {
     renderer.DrawScorePanel(logic.GetScore(), logic.GetLevel(), logic.GetLines());
     renderer.DrawNextPanel(logic.GetNextQueue());
     renderer.DrawControlsPanel();
+
+    if (logic.IsPaused()) renderer.DrawPauseOverlay();
+    if (logic.IsGameOver()) renderer.DrawGameOverOverlay();
 }
 
 void GameManager::Cleanup() {
