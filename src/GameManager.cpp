@@ -101,8 +101,11 @@ void GameManager::Update(float dt) {
 
                 if (ev.data >= 4) {
                     sound.PlayDrop();
+                if (ev.data > 0) {
+                    sound.PlayLineClear(ev.data);
                 }
                 break;
+
             case LogicEvent::GameOver:
                 sound.PlayGameOver();
                 break;
