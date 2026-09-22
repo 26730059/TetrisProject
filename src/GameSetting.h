@@ -78,7 +78,7 @@ public:
     float musicVolume   = 0.5f;               // Am luong nhac nen (0.0 - 1.0)
     float sfxVolume     = 1.0f;               // Am luong hieu ung (0.0 - 1.0)
 
-    int scoreTable[5]   = {0, 100, 300, 500, 800};  // Diem theo so hang xoa (0,1,2,3,4)
+    int scoreTable[5] = { 0, 100, 300, 500, 800 }; // Used by Game Manager
     int softDropPoints  = 1;                  // Diem moi o soft drop
     int hardDropPoints  = 2;                  // Diem moi o hard drop
     int linesPerLevel   = 10;                 // So hang de len level
