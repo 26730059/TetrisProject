@@ -73,7 +73,7 @@ void GameSetting::SetDifficulty(Difficulty d) {
 
 const char* GameSetting::GetDifficultyName() const {
     switch (difficulty) {
-        case DIFF_EASY:   return "Easy";
+        case DIFF_EASY:   return "Easy Mode";
         case DIFF_NORMAL: return "Normal";
         case DIFF_HARD:   return "Hard";
         default:          return "Normal";
