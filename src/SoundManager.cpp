@@ -12,7 +12,7 @@ void SoundManager::Init() {
     sfxGameOver = LoadSound("assets/sound/game_over.mp3");
 
     // Load nhac nen
-    bgm = LoadMusicStream("assets/music/sound2.mp3");
+    bgm = LoadMusicStream("assets/music/the_mountain-joy-444134.mp3");
     bgmLoaded = true;
     PlayMusicStream(bgm);
     ::SetMusicVolume(bgm, currentMusicVol);
